@@ -35,6 +35,6 @@ if(isset($_GET["update"])){
 		</div>
 	</div>
 </div>
-<script type="text/javascript" >
-	CKEDITOR.replace('content');
-</script>
+<?php 
+	include dirname(__DIR__)."/view/footer.php";
+?>

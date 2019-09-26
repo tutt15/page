@@ -17,7 +17,7 @@
 					<tr>
 						<td>Content</td>
 						<td>
-							<textarea type="text" class="form-control" id="content" name="content" placeholder="Enter Content" required="required"></textarea>
+							<textarea type="text" class="form-control ckeditor" id="content" name="content" placeholder="Enter Content" required="required"></textarea>
 						</td>
 					</tr>
 					<tr>
@@ -29,7 +29,6 @@
 	</div>
 </div>
 <script type="text/javascript" >
-	CKEDITOR.replace('content');
 	$("form").submit( function(e) {
             var messageLength = CKEDITOR.instances['content'].getData().replace(/<[^>]*>/gi, '').length;
             if( !messageLength ) {
@@ -38,3 +37,6 @@
             }
         });
 </script>
+<?php 
+	include dirname(__DIR__)."/view/footer.php";
+?>
