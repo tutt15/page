@@ -1,0 +1,86 @@
+<?php
+	include dirname(__DIR__)."/model/action.php";
+	include dirname(__DIR__)."/model/fs.php";
+	include dirname(__DIR__) . "/view/header.php";
+	include dirname(__DIR__) . "/view/session.php";
+	include dirname(__DIR__). "/connect/ftpconect.php";
+ ?>
+ <body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<a href="logout.php" class="btn btn-dark"><?php echo "Xin chào,".$_SESSION['username'];?></a>
+				<h2 class="text-success text-center mt-3 mb-4">PAGE MANAGEMENT</h2>
+				<a href="create.php" class="btn btn-primary float-right mb-3"><i class="fa fa-plus"></i></a>
+				<form action="" method="POST">
+					<table class="table table-bordered table-light">
+						<tr class="bg-success">
+							<th>STT</th>
+							<th>Title</th>
+							<th>Edit</th>
+							<th>Delete</th>
+							<th>Public</th>
+							<th>Status</th>
+						</tr>
+						<?php
+							$myrow = $obj->listPage("page");
+							foreach ($myrow as $row) {
+						?>
+						<tr>
+							<td><?php echo $row["id"]; ?></td>
+							<td><?php echo $row["title"]; ?></td>
+							<td>
+								<a href="update.php?update=1&id=<?php echo $row["id"]; ?>" class="btn btn-info"><i class="far fa-edit"></i></a>
+							</td>
+							<td>
+								<a href="<?php echo $ROOT_PATH.'/model/action.php'?>?delete=1&id=<?php echo $row["id"]; ?>" onclick='return confirm("Are you sure you want to delete?");' class="btn btn-danger"><i class="fas fa-trash"></i></a>
+							</td>
+							<td>
+								<input type="checkbox"  name="checkbox[]" value="<?php echo $row["id"] ;?>">
+							</td>
+							<td>
+								<p type="text"  name="status" value="" ><?php echo $row['status']; ?></p>
+							</td>
+						</tr>
+						<?php
+							}
+						?> 
+					</table>
+					<div class="text-center">
+						<button class="btn btn-success" type="submit" name="submit">Upload</button>
+					</div>
+				</form>	
+			</div>
+		</div>
+	</div>
+ </body>
+ <?php 
+ if (empty($_POST['checkbox'])) {
+		if (isset($_POST['submit'])){
+			$message = "Please choose page upload";
+			echo "<script type='text/javascript'>alert('$message');</script>";
+		}
+	}
+	elseif (isset($_POST['submit'])) {
+		if (!empty($_POST['checkbox'])) {
+		    $fs = new FS;
+			foreach ($_POST['checkbox'] as $value) {
+				$page = $obj->listPageId("page", ['id' => $value]);
+				$content = $fs->setContent($page);
+				$file_pointer = '../'. 'page'. $value .'.html'; 
+				file_put_contents($file_pointer, $content);
+				
+				$local_file = 'C:/xampp/htdocs/page-master/'.'page'. $value .'.html';
+				$ftp_path = '/'.'page'. $value .'.html';
+				$upload = ftp_put($conn_id, $ftp_path, $local_file, FTP_ASCII);
+				if ($upload) {
+					echo "<script type='text/javascript'>alert('Upload Successfully')</script>";
+				}else{
+					echo "<script type='text/javascript'>alert('Upload Failse')</script>";
+				}
+			}
+		}
+		
+	}
+	?>
+
