@@ -1,18 +1,23 @@
 <?php
-include dirname(__DIR__). "/model/action.php";
-include dirname(__DIR__). "/view/header.php";
-if(isset($_GET["update"])){
-	$id = $_GET["id"] ?? null;
-	$where = array("id"=>$id,);
-	$row = $obj->listPageId("page",$where);
-}
+	include dirname(__DIR__). "/model/action.php";
+	include dirname(__DIR__). "/templates/page/header.php";
+	include dirname(__DIR__)."/view/session.php";
+
+	if(!isset($_SESSION['username'])){
+		header("location:login.php");
+		}
+	if(isset($_GET["update"])){
+		$id = $_GET["id"] ?? null;
+		$row = $obj->listPageId($id);
+	}
+	
 ?>
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
 			<h2 class="text-success text-center mt-3 mb-4">UPDATE PAGE </h2>
 			<a href="list.php" class="btn btn-danger"><i class="fa fa-home"></i></a>
-			<form method="post" action="<?php echo $ROOT_PATH.'/model/action.php'?>">
+			<form method="post" action="<?php echo ROOT_PATH.'/model/action.php'?>">
 				<table class="table table-hover">
 					<tr class="hidden">
 						<td><input type="hidden" name="id" value="<?php echo $id; ?>"></td>
@@ -28,7 +33,7 @@ if(isset($_GET["update"])){
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center"><input type="submit" class="btn btn-primary" name="edit" value="Update"></td>
+						<td colspan="2" text-align="center"><input type="submit" class="btn btn-primary" name="edit" value="Update"></td>
 					</tr>
 				</table>
 			</form>
@@ -36,5 +41,5 @@ if(isset($_GET["update"])){
 	</div>
 </div>
 <?php 
-	include dirname(__DIR__)."/view/footer.php";
+	include dirname(__DIR__)."/templates/page/footer.php";
 ?>

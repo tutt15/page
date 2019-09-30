@@ -1,23 +1,18 @@
 <?php
 
 include dirname(__DIR__)."/connect/db.php"; 
-$ROOT_PATH = "http://localhost/page-master";
-
+include_once dirname(__DIR__).'/config/config.php';
 class DataOperation extends Database
 {
-	public function insertPage($table,$fileds){
-		$sql = "";
-		$sql .= "INSERT INTO ".$table;
-		$sql .= " (".implode(",", array_keys($fileds)).") VALUES ";
-		$sql .= "('".implode("','", array_values($fileds))."')";
+	public function insertPage($title, $content){
+		$sql ="INSERT INTO page (title,content) VALUES ('$title','$content')";
 		$query = mysqli_query($this->con,$sql);
 		if($query){
 			return true;
 		}
-
 	}
-	public function listPage ($table){
-		$sql = "SELECT * FROM ".$table;
+	public function listPage (){
+		$sql = "SELECT * FROM page";
 		$array = array();
 		$query = mysqli_query($this->con,$sql);
 		while($row = mysqli_fetch_assoc($query)){
@@ -25,42 +20,43 @@ class DataOperation extends Database
 		}
 		return $array;
 	}
-	public function listPageId($table,$where){
-		$sql = "";
-		$condition = "";
-		foreach ($where as $key => $value) {
-			$condition .= $key . "='" . $value . "' AND ";
-		}
-		$condition = substr($condition, 0, -5);
-		$sql .= "SELECT * FROM ".$table." WHERE ".$condition;
+
+	public function listPageId($id){
+		$sql = "SELECT * FROM page WHERE id = $id";
 		$query = mysqli_query($this->con,$sql);
 		$row = mysqli_fetch_array($query);
 		return $row;
 	}
-	public function updatePage($table,$where,$fields){
-		$sql = "";
-		$condition = "";
-		foreach ($where as $key => $value) {
-			$condition .= $key . "='" . $value . "' AND ";
-		}
-		$condition = substr($condition, 0, -5);
-		foreach ($fields as $key => $value) {
-			$sql .= $key . "='".$value."', ";
-		}
-		$sql = substr($sql, 0,-2);
-		$sql = "UPDATE ".$table." SET ".$sql." WHERE ".$condition;
+
+	public function updatePage($id, $title, $content){
+		$sql = "UPDATE page SET title = '$title', content = '$content' WHERE id = $id ";
 		if(mysqli_query($this->con,$sql)){
 			return true;
 		}
 	}
-	public function deletePage($table,$where){
-		$sql = "";
-		$condition = "";
-		foreach ($where as $key => $value) {
-			$condition .= $key . "='" . $value . "' AND ";
+
+	public function deletePage($id){
+		$sql = "DELETE FROM page WHERE id = '$id'";
+		if(mysqli_query($this->con,$sql)){
+			return true;
 		}
-		$condition = substr($condition, 0, -5);
-		$sql = "DELETE FROM ".$table." WHERE ".$condition;
+	}
+
+	public function updateStatusPage($id){
+		$page = $this->listPageId($id);
+		switch ($page['status']) {
+			case 0:
+				$status = 1;
+				break;
+			case 1:
+				$status = 2;
+				break;
+			case 2:
+			    $status = 2;
+				break;
+		}
+
+		$sql = "UPDATE page SET status = $status WHERE id = $id ";
 		if(mysqli_query($this->con,$sql)){
 			return true;
 		}
@@ -71,33 +67,29 @@ class DataOperation extends Database
 
 
 	if(isset($_POST["create"])){
-		$myArray = array(
-			"title" => $_POST["title"],
-			"content" => $_POST["content"] 
-		);
-		if($obj->insertPage("page",$myArray)){
-			header("location:$ROOT_PATH/view/list.php?msg=Page Inserted");
+		$title = $_POST['title'];
+		$content = $_POST['content'];
+		if($obj->insertPage($title,$content)){
+			header("location:".ROOT_PATH."/view/list.php?msg=Page Inserted");
 		}
 	}
 
 	if(isset($_POST["edit"])){
 		$id = $_POST["id"];
-		$where = array("id"=>$id);
-		$myArray = array(
-			"title" => $_POST["title"],
-			"content" => $_POST["content"] 
-		);
-		if($obj->updatePage("page",$where,$myArray)){
-			header("location:$ROOT_PATH/view/list.php?msg=pageUpdated Successfully");
+		$title = $_POST['title'];
+		$content = $_POST['content'];
+		if($obj->updatePage($id, $title, $content)){
+			header("location:".ROOT_PATH."/view/list.php?msg=pageUpdated Successfully");
 		}
-
 	}
-
 	if(isset($_GET["delete"])){
-		$id = $_GET["id"] ?? null;
-		$where = array("id"=>$id);
-		if($obj->deletePage("page",$where)){
-			header("location:$ROOT_PATH/view/list.php?msg=Page Deleted Successfully");
+		session_start();
+		if(!isset($_SESSION['username'])){
+			header("location:login.php");
+		}
+		$id = $_GET["id"] ;
+		if($obj->deletePage($id)){
+			header("location:".ROOT_PATH."/view/list.php?msg=Page Deleted Successfully");
 		}
 	}
 

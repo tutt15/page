@@ -1,41 +1,35 @@
 <?php 
-	$ROOT_PATH = "http://localhost/page-master"
+	include dirname(__DIR__)."/model/action.php";
+	include_once dirname(__DIR__)."/templates/login/header.php";
+	session_start();
+	$conn = mysqli_connect(HOST,USERNAME,PASSWORD,DATABASE);
+	$error ="";
+    if (isset($_POST["dangnhap"])) {
+        $username = $_POST["username"];
+        $password = $_POST["password"];
+        $username = strip_tags($username);
+        $username = addslashes($username);
+        $password = strip_tags($password);
+        $password = addslashes($password);
+        if ($username == "" || $password =="") {
+            echo "Please enter password or username";
+        }else{
+            $sql = "select * from user where username = '$username' and password = '$password' ";
+            $query = mysqli_query($conn,$sql);
+            $num_rows = mysqli_num_rows($query);
+            if ($num_rows==0) {
+               $error = "Wrong username or password";
+            }else{
+                $_SESSION['username'] = $username;
+                header('Location: ../view/list.php');
+            }
+        }
+    }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Acount Login</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="<?php echo $ROOT_PATH.'/asset/images/icons/favicon.ico'?>"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="<?php echo $ROOT_PATH.'/asset/vendor/bootstrap/css/bootstrap.min.css'?>">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="<?php echo $ROOT_PATH.'/asset/fonts/font-awesome-4.7.0/css/font-awesome.min.css'?>">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="<?php echo $ROOT_PATH.'/asset/fonts/Linearicons-Free-v1.0.0/icon-font.min.css'?>">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="<?php echo $ROOT_PATH.'/asset/vendor/animate/animate.css'?>">
-<!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="<?php echo $ROOT_PATH.'/asset/vendor/css-hamburgers/hamburgers.min.css'?>">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="<?php echo $ROOT_PATH.'/asset/vendor/animsition/css/animsition.min.css'?>">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="<?php echo $ROOT_PATH.'/asset/vendor/select2/select2.min.css'?>">
-<!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="<?php echo $ROOT_PATH.'/asset/vendor/daterangepicker/daterangepicker.css'?>">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="<?php echo $ROOT_PATH.'/asset/css/util.css'?>">
-	<link rel="stylesheet" type="text/css" href="<?php echo $ROOT_PATH.'/asset/css/main.css'?>">
-<!--===============================================================================================-->
-</head>
-<body>
-	
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-50">
-				<form class="login100-form validate-form" action="../model/login.php" method="POST">
+				<form class="login100-form validate-form" action="" method="POST">
 					<span class="login100-form-title p-b-33">
 						Account Login
 					</span>
@@ -58,29 +52,14 @@
 						</button>
 					</div>
 
+					<div style = "font-size:15px; color:#cc0000; margin-top:10px;"><?php echo $error; ?></div>
+
 				</form>
 			</div>
 		</div>
 	</div>
 	
 
-	
-<!--===============================================================================================-->
-	<script src="<?php echo $ROOT_PATH.'/asset/vendor/jquery/jquery-3.2.1.min.js'?>"></script>
-<!--===============================================================================================-->
-	<script src="<?php echo $ROOT_PATH.'/asset/vendor/animsition/js/animsition.min.js'?>"></script>
-<!--===============================================================================================-->
-	<script src="<?php echo $ROOT_PATH.'/asset/vendor/bootstrap/js/popper.js'?>"></script>
-	<script src="<?php echo $ROOT_PATH.'/asset/vendor/bootstrap/js/bootstrap.min.js'?>"></script>
-<!--===============================================================================================-->
-	<script src="<?php echo $ROOT_PATH.'/asset/vendor/select2/select2.min.js'?>"></script>
-<!--===============================================================================================-->
-	<script src="<?php echo $ROOT_PATH.'/asset/vendor/daterangepicker/moment.min.js'?>"></script>
-	<script src="<?php echo $ROOT_PATH.'/asset/vendor/daterangepicker/daterangepicker.js'?>"></script>
-<!--===============================================================================================-->
-	<script src="<?php echo $ROOT_PATH.'/asset/vendor/countdowntime/countdowntime.js'?>"></script>
-<!--===============================================================================================-->
-	<script src="<?php echo $ROOT_PATH.'/asset/js/main.js'?>"></script>
-
-</body>
-</html>
+<?php
+include_once dirname(__DIR__)."/templates/login/footer.php";
+?>

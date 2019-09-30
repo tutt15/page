@@ -12,8 +12,8 @@ CKEDITOR.editorConfig = function( config ) {
    config.filebrowserImageUploadUrl = 'http://localhost/page-master/ckeditor/kcfinder/upload.php?opener=ckeditor&type=images';
    config.filebrowserFlashUploadUrl = 'http://localhost/page-master/ckeditor/kcfinder/upload.php?opener=ckeditor&type=flash';
 
-   // config.extraPlugins = 'filebrowser';
-   // config.filebrowserBrowseUrl = 'http://localhost/page-master/ckeditor/kcfinder/browse.php';
-   // config.filebrowserUploadUrl = 'http://localhost/page-master/ckeditor/kcfinder/upload.php';
+   config.extraPlugins = 'filebrowser';
+   config.filebrowserBrowseUrl = 'http://localhost/page-master/ckeditor/kcfinder/browse.php';
+   config.filebrowserUploadUrl = 'http://localhost/page-master/ckeditor/kcfinder/upload.php';
 
 };

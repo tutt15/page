@@ -14,6 +14,8 @@
 
 class uploader {
 
+    public $filePath = '';
+
 /** Release version */
     const VERSION = "2.51";
 
@@ -321,6 +323,8 @@ class uploader {
                         $url = $base . path::urlPathEncode($path);
                     } else
                         $url = path::urlPathEncode($url);
+                    $this->filePath = $url;
+                    
                 }
             }
         }

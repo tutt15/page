@@ -1,14 +1,8 @@
 <?php
-	
+	include_once dirname(__DIR__)."/connect/db.php";
 	session_start();
-	$servername = "localhost";
-	$database = "db_page";
-	$username = "root";
-	$password = "";
-	$conn = mysqli_connect($servername, $username, $password, $database);
-
 	$username=$_SESSION['username'];
-
+	$conn = mysqli_connect(HOST,USERNAME,PASSWORD,DATABASE);
 	$sql=mysqli_query($conn,"select username from user where username='$username' ");
 
 	$row=mysqli_fetch_array($sql,MYSQLI_ASSOC);
