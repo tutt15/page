@@ -4,6 +4,7 @@ define("FTPHOST", "169.254.214.253");
 define("FTPUSER","tututu");
 define("FTPPASS","12345678");
 define("ROOT_PATH","/page-master");
+define("DOCUMENT_ROOT","C:/xampp/htdocs");
 
 $conn_id = ftp_connect(FTPHOST) or die("Couldn't connect to $ftpHost");
 ftp_login($conn_id, FTPUSER, FTPPASS);
@@ -30,7 +31,7 @@ $urlReturn = $uploader->filePath;
 
 // $urlLocal = str_replace("%20", " ", $urlReturn);
 
-$localPath = "C:/xampp/htdocs" . $urlReturn;
+$localPath = DOCUMENT_ROOT . $urlReturn;
 
 $ftp_path = str_replace(ROOT_PATH, "", $urlReturn);
 

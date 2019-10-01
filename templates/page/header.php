@@ -14,4 +14,5 @@
 	<script src="<?php echo ROOT_PATH.'/asset/bootstrap/js/bootstrap.min.js'?>"></script>
 	<script src="<?php echo ROOT_PATH.'/ckeditor/ckeditor.js'?>"></script>
 	<script src="<?php echo ROOT_PATH.'/asset/js/a076d05399.js'?>"></script>
+	<script src="<?php echo ROOT_PATH.'/asset/js/validate.min.js'?>"></script>
 </head>

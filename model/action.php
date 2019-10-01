@@ -2,8 +2,10 @@
 
 include dirname(__DIR__)."/connect/db.php"; 
 include_once dirname(__DIR__).'/config/config.php';
+
 class DataOperation extends Database
 {
+	//Create new page
 	public function insertPage($title, $content){
 		$sql ="INSERT INTO page (title,content) VALUES ('$title','$content')";
 		$query = mysqli_query($this->con,$sql);
@@ -11,6 +13,8 @@ class DataOperation extends Database
 			return true;
 		}
 	}
+
+	//Display all page
 	public function listPage (){
 		$sql = "SELECT * FROM page";
 		$array = array();
@@ -21,6 +25,7 @@ class DataOperation extends Database
 		return $array;
 	}
 
+	//Display page follow id
 	public function listPageId($id){
 		$sql = "SELECT * FROM page WHERE id = $id";
 		$query = mysqli_query($this->con,$sql);
@@ -28,6 +33,7 @@ class DataOperation extends Database
 		return $row;
 	}
 
+	//Update page 
 	public function updatePage($id, $title, $content){
 		$sql = "UPDATE page SET title = '$title', content = '$content' WHERE id = $id ";
 		if(mysqli_query($this->con,$sql)){
@@ -35,6 +41,7 @@ class DataOperation extends Database
 		}
 	}
 
+	//Delete page
 	public function deletePage($id){
 		$sql = "DELETE FROM page WHERE id = '$id'";
 		if(mysqli_query($this->con,$sql)){
@@ -42,6 +49,7 @@ class DataOperation extends Database
 		}
 	}
 
+	//Update status page
 	public function updateStatusPage($id){
 		$page = $this->listPageId($id);
 		switch ($page['status']) {
@@ -67,8 +75,8 @@ class DataOperation extends Database
 
 
 	if(isset($_POST["create"])){
-		$title = $_POST['title'];
-		$content = $_POST['content'];
+		$title = trim($_POST['title']);
+		$content = trim($_POST['content']);
 		if($obj->insertPage($title,$content)){
 			header("location:".ROOT_PATH."/view/list.php?msg=Page Inserted");
 		}
@@ -76,8 +84,8 @@ class DataOperation extends Database
 
 	if(isset($_POST["edit"])){
 		$id = $_POST["id"];
-		$title = $_POST['title'];
-		$content = $_POST['content'];
+		$title = trim($_POST['title']);
+		$content = trim($_POST['content']);
 		if($obj->updatePage($id, $title, $content)){
 			header("location:".ROOT_PATH."/view/list.php?msg=pageUpdated Successfully");
 		}

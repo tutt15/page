@@ -10,7 +10,6 @@
 		$id = $_GET["id"] ?? null;
 		$row = $obj->listPageId($id);
 	}
-	
 ?>
 <div class="container">
 	<div class="row">
