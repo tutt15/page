@@ -11,7 +11,7 @@
 	  }
  ?>
 <?php 
-//Check 
+//Check  upload
  if (empty($_POST['checkbox'])) {
 		if (isset($_POST['submit'])){
 			echo "<div class='container alert alert-info'>Please choose page upload</div>";
@@ -45,6 +45,28 @@
 				echo "<div class='container alert alert-success'>Upload successfull.</div>";
 			}else{
 				echo "<div class='container alert alert-danger'>Upload fails.</div>";
+			}
+		}
+	}
+	//Delete page
+	if (isset($_POST['submitDel'])) {
+		if (!empty($_POST['delete'])) {
+			foreach ($_POST['delete'] as $key => $value) {
+				//Delete one page
+				$page = $obj->deletePage($value);
+				$link  = dirname(__DIR__).'/'.'page'. $value .'.html';
+				$ftp_path = '/'.'page'. $value .'.html';
+
+				$file = 'page'. $value .'.html';
+				$contents_on_server = ftp_nlist($conn_id, '.');
+                if (in_array($file, $contents_on_server) && ($file != NULL)) {
+					unlink($link);
+					if(ftp_delete($conn_id, $ftp_path)){
+						echo "<div class='container alert alert-success'>Delete successfull.</div>";
+					}else{
+						echo "<div class='container alert alert-danger'>Delete fails.</div>";
+					}
+                }
 			}
 		}
 	}
@@ -83,7 +105,8 @@
 								<a href="update.php?update=1&id=<?php echo $row["id"]; ?>" class="btn btn-info"><i class="far fa-edit"></i></a>
 							</td>
 							<td>
-								<a href="<?php  echo ROOT_PATH.'/model/action.php'?>?delete=1&id=<?php echo $row["id"]; ?>" onclick='return confirm("Are you sure you want to delete?");' class="btn btn-danger"><i class="fas fa-trash"></i></a>
+								<!-- <a href="<?php  echo ROOT_PATH.'/model/action.php'?>?delete=1&id=<?php echo $row["id"]; ?>" name="delete" onclick='return confirm("Are you sure you want to delete?");' class="btn btn-danger"><i class="fas fa-trash"></i></a> -->
+								<input type="checkbox" class="checkbox_delete"  name="delete[]" value="<?php echo $row["id"] ;?>">
 							</td>
 							<td>
 								<p type="text"  name="status" value="" ><?php echo $row['status']; ?></p>
@@ -98,6 +121,7 @@
 					</table>
 					<div class="text-center">
 						<button class="btn btn-success" type="submit" name="submit">Upload</button>
+						<button class="btn btn-success" type="submitDel" name="submitDel">Delete</button>
 					</div>
 				</form>	
 			</div>
@@ -114,7 +138,6 @@
 			checkboxes[i].checked = select_all.checked;
 		}
 	});
-
 
 	for (var i = 0; i < checkboxes.length; i++) {
 		checkboxes[i].addEventListener('change', function(e){ //".checkbox" change 
