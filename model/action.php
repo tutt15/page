@@ -41,6 +41,13 @@ class DataOperation extends Database
 		}
 	}
 
+	public function updateFile($id,$upload){
+		$sql = "UPDATE page SET upload = '$upload' WHERE id = $id ";
+		if(mysqli_query($this->con,$sql)){
+			return true;
+		}
+	}
+
 	//Delete page
 	public function deletePage($id){
 		$sql = "DELETE FROM page WHERE id = '$id'";
@@ -53,18 +60,18 @@ class DataOperation extends Database
 	public function updateStatusPage($id){
 		$page = $this->listPageId($id);
 		switch ($page['status']) {
-			case 0:
-				$status = 1;
+			case "New":
+				$status = "Public";
 				break;
-			case 1:
-				$status = 2;
+			case "Public":
+				$status = "Edit";
 				break;
-			case 2:
-			    $status = 2;
+			case "Edit":
+			    $status = "Edit";
 				break;
 		}
 
-		$sql = "UPDATE page SET status = $status WHERE id = $id ";
+		$sql = "UPDATE page SET status = '$status' WHERE id = $id ";
 		if(mysqli_query($this->con,$sql)){
 			return true;
 		}

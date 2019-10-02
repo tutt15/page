@@ -24,11 +24,11 @@
 				// FTP Upload file to server
 				$page = $obj->listPageId($value);
 				$content = $fs->setContent($page);
-				$file_pointer = '../'. 'page'. $value .'.html'; 
+				$file_pointer = dirname(__DIR__).'/'. 'page'. $value .'.html'; 
 				file_put_contents($file_pointer, $content);
 
-				$subject = file_get_contents('../'. 'page'. $value .'.html');
-				$update = '../'. 'page'. $value .'.html';
+				$subject = file_get_contents(dirname(__DIR__).'/'. 'page'. $value .'.html');
+				$update = dirname(__DIR__).'/'. 'page'. $value .'.html';
 				$pattern = "/\/page-master\//";
 				$replace = '';
 				file_put_contents($update,preg_replace($pattern, $replace, $subject));
@@ -36,9 +36,11 @@
 				$local_file = ROOT_PATH.'/'.'page'. $value .'.html';
 				$ftp_path = '/'.'page'. $value .'.html';
 				$upload = ftp_put($conn_id, $ftp_path, $local_file, FTP_ASCII);
-
+				
+				$file = 'page'. $value .'.html';
 				// Update status page
 				$dataOperation = new DataOperation();
+				$dataOperation->updateFile($value,$file);
 				$dataOperation->updateStatusPage($value);
 			}
 			if ($upload) {
@@ -53,21 +55,28 @@
 		if (!empty($_POST['delete'])) {
 			foreach ($_POST['delete'] as $key => $value) {
 				//Delete one page
-				$page = $obj->deletePage($value);
-				$link  = dirname(__DIR__).'/'.'page'. $value .'.html';
+				$link  = dirname(__DIR__).'/'.'page'. $value .'.html';//Address page on local 
 				$ftp_path = '/'.'page'. $value .'.html';
 
-				$file = 'page'. $value .'.html';
-				$contents_on_server = ftp_nlist($conn_id, '.');
-                if (in_array($file, $contents_on_server) && ($file != NULL)) {
-					unlink($link);
-					if(ftp_delete($conn_id, $ftp_path)){
-						echo "<div class='container alert alert-success'>Delete successfull.</div>";
-					}else{
-						echo "<div class='container alert alert-danger'>Delete fails.</div>";
-					}
-                }
+				$file = 'page'. $value .'.html';//name page on FTP server
+				$contents_on_server = ftp_nlist($conn_id, '.');//return list page in folder on FTP server
+				if (in_array($file, $contents_on_server) && ($file != NULL)) {
+				$page = $obj->deletePage($value);
+				unlink($link);
+				if(ftp_delete($conn_id, $ftp_path)){
+					echo "<div class='container alert alert-success'>Delete successfull.</div>";
+				}else{
+					echo "<div class='container alert alert-danger'>Delete fails.</div>";
+				}
+			}else{
+				if($page = $obj->deletePage($value)){
+					echo "<div class='container alert alert-success'>Delete successfull.</div>";
+				}else{
+					echo "<div class='container alert alert-danger'>Delete fails.</div>";
+				}
 			}
+			}
+			
 		}
 	}
 	?>
@@ -99,13 +108,20 @@
 						<tr>
 							<td><?php echo $row["id"]; ?></td>
 							<td>
-								<?php echo $row["title"]; ?>
+								<?php 
+									if($row['status'] == "Public" || $row['status'] == "Edit" ){
+									?>
+										<a href="../<?php echo $row['upload']; ?>" target="_blank" ><?php echo $row['title'];?></a>
+									<?php
+									}else{
+										 echo $row['title'];
+									}
+								 ?>
 							</td>
 							<td>
 								<a href="update.php?update=1&id=<?php echo $row["id"]; ?>" class="btn btn-info"><i class="far fa-edit"></i></a>
 							</td>
 							<td>
-								<!-- <a href="<?php  echo ROOT_PATH.'/model/action.php'?>?delete=1&id=<?php echo $row["id"]; ?>" name="delete" onclick='return confirm("Are you sure you want to delete?");' class="btn btn-danger"><i class="fas fa-trash"></i></a> -->
 								<input type="checkbox" class="checkbox_delete"  name="delete[]" value="<?php echo $row["id"] ;?>">
 							</td>
 							<td>
