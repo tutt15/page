@@ -12,4 +12,7 @@
 
 	//const define root folder
 	define('ROOT_PATH', 'http://localhost/page-master');
+	
+	define("DOCUMENT_ROOT","C:/xampp/htdocs");
+	define("FTP_ROOT","D:ftp/");
  ?>

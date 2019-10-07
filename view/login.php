@@ -4,9 +4,9 @@
 	session_start();
 	$conn = mysqli_connect(HOST,USERNAME,PASSWORD,DATABASE);
 	$error ="";
-    if (isset($_POST["dangnhap"])) {
-        $username = $_POST["username"];
-        $password = $_POST["password"];
+    if (isset($_POST["login"])) {
+		$username = trim($_POST["username"]);
+		$password = trim($_POST["password"]);
         $username = strip_tags($username);
         $username = addslashes($username);
         $password = strip_tags($password);
@@ -21,7 +21,7 @@
                $error = "Wrong username or password";
             }else{
                 $_SESSION['username'] = $username;
-                header('Location: ../view/list.php');
+                header('Location:'.ROOT_PATH.'/view/list.php');
             }
         }
     }
@@ -47,7 +47,7 @@
 					</div>
 
 					<div class="container-login100-form-btn m-t-20">
-						<button class="login100-form-btn" type="submit" name="dangnhap">
+						<button class="login100-form-btn" type="submit" name="login">
 							Sign in
 						</button>
 					</div>

@@ -1,13 +1,13 @@
 <?php
+ include_once dirname(__DIR__)."../../config/config.php";
+ include_once dirname(__DIR__). "../../connect/ftpconect.php";
+// define("FTPHOST", "169.254.214.253");
+// define("FTPUSER","tututu");
+// define("FTPPASS","12345678");
 
-define("FTPHOST", "169.254.214.253");
-define("FTPUSER","tututu");
-define("FTPPASS","12345678");
-define("ROOT_PATH","/page-master");
-define("DOCUMENT_ROOT","C:/xampp/htdocs");
 
-$conn_id = ftp_connect(FTPHOST) or die("Couldn't connect to $ftpHost");
-ftp_login($conn_id, FTPUSER, FTPPASS);
+// $conn_id = ftp_connect(FTPHOST) or die("Couldn't connect to FTPHOST");
+// ftp_login($conn_id, FTPUSER, FTPPASS);
 
 /** This file is part of KCFinder project
   *
@@ -33,7 +33,7 @@ $urlReturn = $uploader->filePath;
 
 $localPath = DOCUMENT_ROOT . $urlReturn;
 
-$ftp_path = str_replace(ROOT_PATH, "", $urlReturn);
+$ftp_path = str_replace("/page-master", "", $urlReturn);
 
 // $ftp_path = "/test.jpg";
 

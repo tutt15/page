@@ -14,7 +14,7 @@
 //Check  upload
  if (empty($_POST['checkbox'])) {
 		if (isset($_POST['submit'])){
-			echo "<div class='container alert alert-info'>Please choose page upload</div>";
+			echo "<script>alert('Please choose page upload')</script>";
 		}
 	}
 	elseif (isset($_POST['submit'])) {
@@ -36,11 +36,13 @@
 				$local_file = ROOT_PATH.'/'.'page'. $value .'.html';
 				$ftp_path = '/'.'page'. $value .'.html';
 				$upload = ftp_put($conn_id, $ftp_path, $local_file, FTP_ASCII);
+
+				$file_update = 'page'. $value .'.html';
 				
-				$file = 'page'. $value .'.html';
-				// Update status page
 				$dataOperation = new DataOperation();
-				$dataOperation->updateFile($value,$file);
+				// Update link upload 
+				$dataOperation->updateFile($value,$ftp_path);
+				// Update status page
 				$dataOperation->updateStatusPage($value);
 			}
 			if ($upload) {
@@ -51,9 +53,14 @@
 		}
 	}
 	//Delete page
+	if (empty($_POST['checkbox'])) {
+		if (isset($_POST['submitDel'])){
+			echo "<script>alert('Please choose page delete')</script>";
+		}
+	}
 	if (isset($_POST['submitDel'])) {
-		if (!empty($_POST['delete'])) {
-			foreach ($_POST['delete'] as $key => $value) {
+		if (!empty($_POST['checkbox'])) {
+			foreach ($_POST['checkbox'] as $key => $value) {
 				//Delete one page
 				$link  = dirname(__DIR__).'/'.'page'. $value .'.html';//Address page on local 
 				$ftp_path = '/'.'page'. $value .'.html';
@@ -61,25 +68,25 @@
 				$file = 'page'. $value .'.html';//name page on FTP server
 				$contents_on_server = ftp_nlist($conn_id, '.');//return list page in folder on FTP server
 				if (in_array($file, $contents_on_server) && ($file != NULL)) {
-				$page = $obj->deletePage($value);
-				unlink($link);
-				if(ftp_delete($conn_id, $ftp_path)){
-					echo "<div class='container alert alert-success'>Delete successfull.</div>";
+					$page = $obj->deletePage($value);
+					unlink($link);
+					if(ftp_delete($conn_id, $ftp_path)){
+						echo "<div class='container alert alert-success'>Delete successfull.</div>";
+					}else{
+						echo "<div class='container alert alert-danger'>Delete fails.</div>";
+					}
 				}else{
-					echo "<div class='container alert alert-danger'>Delete fails.</div>";
-				}
-			}else{
-				if($page = $obj->deletePage($value)){
-					echo "<div class='container alert alert-success'>Delete successfull.</div>";
-				}else{
-					echo "<div class='container alert alert-danger'>Delete fails.</div>";
+					if($page = $obj->deletePage($value)){
+						echo "<div class='container alert alert-success'>Delete successfull.</div>";
+					}else{
+						echo "<div class='container alert alert-danger'>Delete fails.</div>";
+					}
 				}
 			}
-			}
-			
 		}
 	}
-	?>
+
+?>
 
  <body>
 	<div class="container">
@@ -95,7 +102,6 @@
 							<th>STT</th>
 							<th>Title</th>
 							<th>Edit</th>
-							<th>Delete</th>
 							<th>Status</th>
 							<th>
 								<input type="checkbox" id="select_all"/>
@@ -111,7 +117,7 @@
 								<?php 
 									if($row['status'] == "Public" || $row['status'] == "Edit" ){
 									?>
-										<a href="../<?php echo $row['upload']; ?>" target="_blank" ><?php echo $row['title'];?></a>
+										<a href="ftp://169.254.214.253/<?php echo $row['upload']; ?>" target="_blank" ><?php echo html_entity_decode($row['title']);?></a>
 									<?php
 									}else{
 										 echo $row['title'];
@@ -120,9 +126,6 @@
 							</td>
 							<td>
 								<a href="update.php?update=1&id=<?php echo $row["id"]; ?>" class="btn btn-info"><i class="far fa-edit"></i></a>
-							</td>
-							<td>
-								<input type="checkbox" class="checkbox_delete"  name="delete[]" value="<?php echo $row["id"] ;?>">
 							</td>
 							<td>
 								<p type="text"  name="status" value="" ><?php echo $row['status']; ?></p>

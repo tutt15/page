@@ -23,7 +23,7 @@
 					</tr>
 					<tr>
 						<td>Title</td>
-						<td><input type="text" class="form-control" value="<?php echo $row["title"]; ?>" name="title" placeholder="Enter Title"></td>
+						<td><input type="text" class="form-control" value="<?php echo $row["title"]; ?>" name="title" placeholder="Enter Title" required></td>
 					</tr>
 					<tr>
 						<td>Content</td>
