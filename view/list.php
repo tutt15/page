@@ -14,7 +14,9 @@
 //Check  upload
  if (empty($_POST['checkbox'])) {
 		if (isset($_POST['submit'])){
-			echo "<script>alert('Please choose page upload')</script>";
+			?>
+		<script>alert('Please choose page upload')</script>;
+		<?php
 		}
 	}
 	elseif (isset($_POST['submit'])) {
@@ -70,18 +72,15 @@
 				if (in_array($file, $contents_on_server) && ($file != NULL)) {
 					$page = $obj->deletePage($value);
 					unlink($link);
-					if(ftp_delete($conn_id, $ftp_path)){
-						echo "<div class='container alert alert-success'>Delete successfull.</div>";
-					}else{
-						echo "<div class='container alert alert-danger'>Delete fails.</div>";
-					}
+					$del_file = ftp_delete($conn_id, $ftp_path);
 				}else{
-					if($page = $obj->deletePage($value)){
-						echo "<div class='container alert alert-success'>Delete successfull.</div>";
-					}else{
-						echo "<div class='container alert alert-danger'>Delete fails.</div>";
-					}
+					$page = $obj->deletePage($value);
 				}
+			}
+			if($del_file || $page){
+				echo "<div class= 'container alert alert-success'>Delete success</div>";
+			}else{
+				echo "<div class= 'container alert alert-danger'>Delete fail</div>";
 			}
 		}
 	}
