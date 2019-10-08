@@ -7,19 +7,12 @@
 	include dirname(__DIR__). "/view/upload.php";
 	//Check $_SESSION['username'] 
 	if(!isset($_SESSION['username'])){
-		header("location:login.php");
+		header("location:logingit.php");
 	  }
  ?>
 <?php 
 //Check  upload
- if (empty($_POST['checkbox'])) {
-		if (isset($_POST['submit'])){
-			?>
-		<script>alert('Please choose page upload')</script>;
-		<?php
-		}
-	}
-	elseif (isset($_POST['submit'])) {
+	if (isset($_POST['submit'])) {
 		if (!empty($_POST['checkbox'])) {
 			$fs = new FS;
 			foreach ($_POST['checkbox'] as $key => $value) {
@@ -28,24 +21,25 @@
 				$content = $fs->setContent($page);
 				$file_pointer = dirname(__DIR__).'/'. 'page'. $value .'.html'; 
 				file_put_contents($file_pointer, $content);
-
+				
 				$subject = file_get_contents(dirname(__DIR__).'/'. 'page'. $value .'.html');
 				$update = dirname(__DIR__).'/'. 'page'. $value .'.html';
 				$pattern = "/\/page-master\//";
 				$replace = '';
 				file_put_contents($update,preg_replace($pattern, $replace, $subject));
-
+				
 				$local_file = ROOT_PATH.'/'.'page'. $value .'.html';
 				$ftp_path = '/'.'page'. $value .'.html';
 				$upload = ftp_put($conn_id, $ftp_path, $local_file, FTP_ASCII);
 
 				$file_update = 'page'. $value .'.html';
-				
 				$dataOperation = new DataOperation();
 				// Update link upload 
 				$dataOperation->updateFile($value,$ftp_path);
+
 				// Update status page
-				$dataOperation->updateStatusPage($value);
+				 $dataOperation->updateStatusPage($value);
+			    // die();
 			}
 			if ($upload) {
 				echo "<div class='container alert alert-success'>Upload successfull.</div>";
@@ -54,12 +48,8 @@
 			}
 		}
 	}
+
 	//Delete page
-	if (empty($_POST['checkbox'])) {
-		if (isset($_POST['submitDel'])){
-			echo "<script>alert('Please choose page delete')</script>";
-		}
-	}
 	if (isset($_POST['submitDel'])) {
 		if (!empty($_POST['checkbox'])) {
 			foreach ($_POST['checkbox'] as $key => $value) {
@@ -95,7 +85,7 @@
 				<a href="logout.php" class="btn btn-dark float-right mt-3">Logout</a>
 				<h2 class="text-success text-center mt-3 mb-4">PAGE MANAGEMENT</h2>
 				<a href="create.php" class="btn btn-primary float-right mb-3"><i class="fa fa-plus"></i></a>
-				<form action="" method="POST">
+				<form action="" method="POST" name="frmList">
 					<table class="table table-bordered">
 						<tr class=" text-center">
 							<th>STT</th>
@@ -114,9 +104,9 @@
 							<td><?php echo $row["id"]; ?></td>
 							<td>
 								<?php 
-									if($row['status'] == "Public" || $row['status'] == "Edit" ){
+									if($row['status'] == "Public" ){
 									?>
-										<a href="ftp://169.254.214.253/<?php echo $row['upload']; ?>" target="_blank" ><?php echo html_entity_decode($row['title']);?></a>
+										<a href="ftp://169.254.214.253/<?php echo $row['upload']; ?>" target="_blank" ><?php echo stripslashes($row['title']);?></a>
 									<?php
 									}else{
 										 echo $row['title'];
@@ -138,7 +128,7 @@
 						?> 
 					</table>
 					<div class="text-center">
-						<button class="btn btn-success" type="submit" name="submit">Upload</button>
+						<button class="btn btn-success" type="submit" name="submit" >Upload</button>
 						<button class="btn btn-success" type="submitDel" name="submitDel">Delete</button>
 					</div>
 				</form>	
@@ -170,6 +160,18 @@
 		});
 	}
  </script>
-
-
-
+<script type="text/javascript">
+	$('form').submit(function(){
+	var flag=0;
+	$('.checkbox').each(function(){
+		if(($(this).is(':checked'))){
+		flag=1
+		return false;
+		}
+	});
+	if(flag==0){
+		alert("Please Check Checkbox");
+		return false
+	}
+	});
+</script>

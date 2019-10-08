@@ -5,9 +5,9 @@ class FS
 	public function setContent($data)
 	{
 		$title = "{$data['title']}";
-		$content = "<h2>{$data['title']}</h2>
-		<p>{$data['content']}</p>";
-		return $this->bindContent($content,$title);
+		$content = stripslashes("<h2>{$data['title']}</h2>
+		<p>{$data['content']}</p>");
+		return $this->bindContent($title,$content);
 	}
 
 	private function bindContent($data,$data1) {
@@ -16,10 +16,10 @@ class FS
 <html lang="en"> 
 <head> 
 	<meta charset="UTF-8"> 
-	<title>'.$data1.'</title> 
+	<title>'.$data.'</title> 
 </head> 
 <body>
-	'. $data .'
+	'. $data1 .'
 </body> 
 </html>';
 	}

@@ -8,9 +8,7 @@ class DataOperation extends Database
 	//Create new page
 	public function insertPage($title, $content){
 		$stmt = $this->con->prepare('INSERT INTO page (title, content) VALUES (?,?)') ;
-  
 		$stmt->bind_param("ss", $title, $content);
-		
 		$row = $stmt->execute();
 		if($row){
 			header("location:".ROOT_PATH."/view/list.php?msg=Page Inserted");
@@ -41,7 +39,7 @@ class DataOperation extends Database
 
 	//Update page 
 	public function updatePage($id, $title, $content){
-		$sql = "UPDATE page SET title = '$title', content = '$content' WHERE id = $id ";
+		$sql = "UPDATE page SET title = '$title',content = '$content' WHERE id = $id ";
 		if(mysqli_query($this->con,$sql)){
 			return true;
 		}
@@ -70,13 +68,9 @@ class DataOperation extends Database
 				$status = "Public";
 				break;
 			case "Public":
-				$status = "Edit";
-				break;
-			case "Edit":
-			    $status = "Public";
+				$status = "Public";
 				break;
 		}
-
 		$sql = "UPDATE page SET status = '$status' WHERE id = $id ";
 		if(mysqli_query($this->con,$sql)){
 			return true;
@@ -89,18 +83,16 @@ class DataOperation extends Database
 
 	if(isset($_POST["create"])){
 		$title = htmlspecialchars($_POST['title']);
-		$content = htmlspecialchars($_POST['content']);
-		if($obj->insertPage($title,$content)){
-			header("location:".ROOT_PATH."/view/list.php?msg=Page Inserted");
-		}
+		$content = ($_POST['content']);
+		$obj->insertPage($title,$content);
 	}
 
 	if(isset($_POST["edit"])){
 		$id = $_POST["id"];
-		$title = $_POST['title'];
-		$content = $_POST['content'];
+		$title = htmlspecialchars($_POST['title']);
+		$content = htmlspecialchars($_POST['content']);
 		if($obj->updatePage($id, $title, $content)){
-			header("location:".ROOT_PATH."/view/list.php?msg=pageUpdated Successfully");
+			header("location:".ROOT_PATH."/view/list.php?msg=Updated Successfully");
 		}
 	}
 	if(isset($_GET["delete"])){
