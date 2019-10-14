@@ -27,12 +27,69 @@
 				$arr_upload[] =  $value;
 				$local_file = dirname(__DIR__).'/'.'page'. $value .'.html';
 				$ftp_path = '/'.'page'. $value .'.html';
-				$upload = ftp_put($conn_id, $ftp_path, $local_file, FTP_ASCII);
+				//$upload = ftp_put($conn_id, $ftp_path, $local_file, FTP_ASCII);
 
-				// ftp img
-				// get img table by page id
+				$regex = '/src="([^"]+)"/'; //get string in scr= ""
+				preg_match_all($regex, $content, $matches, PREG_SET_ORDER, 0);
+				$dir_page = ftp_pwd($conn_id).$value;
+
+				$content_ftp = ftp_nlist($conn_id,ftp_pwd($conn_id));
 				
+				if(in_array($dir_page,$content_ftp)){
+					foreach($matches as $val){
+						$get_link_img = "C:/xampp/htdocs/page-master".$val[1];
+						$path_info = pathinfo($get_link_img);
+						$get_img_name = $path_info['basename'];
+						$link_path = $dir_page.'/'.$get_img_name;
+						if(ftp_put($conn_id,$link_path,$get_link_img,FTP_ASCII)){
+							$img_using[] = $get_img_name;
+						}
+					}
+					$check_content_child_folder = ftp_nlist($conn_id, $dir_page);
 
+					foreach($check_content_child_folder as $check){
+						$path_info_check = pathinfo($check);
+						if($path_info_check['extension']!='hmtl'){
+							$list_content[] = $path_info_check['basename'];
+						}
+					}
+
+					if (!empty($img_using)) {
+						$get_array_non_using = array_diff($list_content, $img_using);
+						foreach($get_array_non_using as $remove) {
+							if (!ftp_delete($conn_id, $dir_page . "/$remove")) {
+								echo "Cant delete this file $remove cause file not exist or deleted.";
+							}
+						}
+					}
+				}else{
+					if (ftp_mkdir($conn_id,$dir_page)) {
+						foreach($matches as $val){
+							// /ckeditor/kcfinder/upload/images/doc.png
+
+							$get_link_img = "C:/xampp/htdocs/page-master".$val[1];
+							// $get_link_img = "C:/xampp/htdocs/page-master/ckeditor/kcfinder/upload/images/doc.png";
+							$path_info = pathinfo($get_link_img);
+
+							$get_img_name = $path_info['basename'];
+							// $link_path = $dir_page.'/doc.png';
+						    $link_path = $dir_page.'/'.$get_img_name;
+
+							if(!ftp_put($conn_id,$link_path,$get_link_img,FTP_BINARY)){
+								echo "Error";
+							}
+						}
+					}
+				}
+				$link_temp = "file_temp.html";
+				$partern = "/\ckeditor\/kcfinder/\upload\/images/\/m";
+				$replace_img = $link_path;
+				$subject_img = file_get_contents($local_file);
+				$result = file_put_contents($link_temp,preg_replace($pattern,$replace_img,$subject_img));
+				// die();
+				$upload = ftp_put($conn_id, $dir_page . "/page$value.html", $link_temp, FTP_ASCII);
+
+				file_put_contents($link_temp, "");
 				$file_update = 'page'. $value .'.html';
 				$dataOperation = new DataOperation();
 				// Update link upload 
@@ -42,6 +99,9 @@
 				 $dataOperation->updateStatusPage($value);
 			    // die();
 			}
+			// var_dump($dir_page);die();
+			
+
 			if ($upload) {
 				$id_upload = implode('-', $arr_upload);
 				echo "<div class='container alert alert-success'>Upload successfull $id_upload.</div>";
@@ -108,7 +168,7 @@
 								<?php 
 									if($row['status'] == "Public" ){
 									?>
-										<a href="ftp://169.254.214.253/<?php echo $row['upload']; ?>" target="_blank" ><?php echo $row['title'];?></a>
+										<a href="cmsftppage.vn<?php echo $row['upload']; ?>" target="_blank" ><?php echo $row['title'];?></a>
 									<?php
 									}else{
 										 echo $row['title'];
