@@ -1,17 +1,14 @@
 <?php
-	include dirname(__DIR__)."/model/action.php";
+	include dirname(__DIR__)."/model/controller.php";
 	include dirname(__DIR__)."/templates/page/header.php";
-	include dirname(__DIR__)."/view/session.php";
-	if(!isset($_SESSION['username'])){
-		header("location:login.php");
-	  }
+	
  ?>
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
 			<h2 class="text-success text-center mt-3 mb-4">CREATE PAGE </h2>
 			<a href="list.php" class="btn btn-danger"><i class="fa fa-home"></i></a>
-			<form method="POST" id="frmCreate" action="<?php echo ROOT_PATH.'/model/action.php'?>">
+			<form method="POST" id="frmCreate" action="../model/controller.php">
 				<table class="table table-hover">
 					<tr>
 						<td>Title</td>

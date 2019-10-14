@@ -1,14 +1,10 @@
 <?php
 	include dirname(__DIR__) . "/templates/page/header.php";
-	include dirname(__DIR__)."/model/action.php";
+	include dirname(__DIR__)."/model/controller.php";
 	include dirname(__DIR__)."/model/fs.php";
 	include dirname(__DIR__) . "/view/session.php";
 	include dirname(__DIR__). "/connect/ftpconect.php";
 	include dirname(__DIR__). "/view/upload.php";
-	//Check $_SESSION['username'] 
-	if(!isset($_SESSION['username'])){
-		header("location:logingit.php");
-	  }
  ?>
 <?php 
 //Check  upload
@@ -24,13 +20,18 @@
 				
 				$subject = file_get_contents(dirname(__DIR__).'/'. 'page'. $value .'.html');
 				$update = dirname(__DIR__).'/'. 'page'. $value .'.html';
-				$pattern = "/\/page-master\//";
-				$replace = '';
+				$pattern = "/\/ckeditor/";
+				$replace = 'ckeditor';
 				file_put_contents($update,preg_replace($pattern, $replace, $subject));
 				
-				$local_file = ROOT_PATH.'/'.'page'. $value .'.html';
+				$arr_upload[] =  $value;
+				$local_file = dirname(__DIR__).'/'.'page'. $value .'.html';
 				$ftp_path = '/'.'page'. $value .'.html';
 				$upload = ftp_put($conn_id, $ftp_path, $local_file, FTP_ASCII);
+
+				// ftp img
+				// get img table by page id
+				
 
 				$file_update = 'page'. $value .'.html';
 				$dataOperation = new DataOperation();
@@ -42,7 +43,8 @@
 			    // die();
 			}
 			if ($upload) {
-				echo "<div class='container alert alert-success'>Upload successfull.</div>";
+				$id_upload = implode('-', $arr_upload);
+				echo "<div class='container alert alert-success'>Upload successfull $id_upload.</div>";
 			}else{
 				echo "<div class='container alert alert-danger'>Upload fails.</div>";
 			}
@@ -51,7 +53,6 @@
 
 	//Delete page
 	if (isset($_POST['submitDel'])) {
-		if (!empty($_POST['checkbox'])) {
 			foreach ($_POST['checkbox'] as $key => $value) {
 				//Delete one page
 				$link  = dirname(__DIR__).'/'.'page'. $value .'.html';//Address page on local 
@@ -59,20 +60,21 @@
 
 				$file = 'page'. $value .'.html';//name page on FTP server
 				$contents_on_server = ftp_nlist($conn_id, '.');//return list page in folder on FTP server
+				
 				if (in_array($file, $contents_on_server) && ($file != NULL)) {
+					$arDel[] = $value;
 					$page = $obj->deletePage($value);
 					unlink($link);
 					$del_file = ftp_delete($conn_id, $ftp_path);
 				}else{
+					$arDel[] = $value;
 					$page = $obj->deletePage($value);
 				}
 			}
-			if($del_file || $page){
-				echo "<div class= 'container alert alert-success'>Delete success</div>";
-			}else{
-				echo "<div class= 'container alert alert-danger'>Delete fail</div>";
+			if(isset($arDel)){
+				$del = implode('-', $arDel);
+				echo "<div class='container alert alert-success'>Delete success pages $del</div>";
 			}
-		}
 	}
 
 ?>
@@ -85,9 +87,9 @@
 				<a href="logout.php" class="btn btn-dark float-right mt-3">Logout</a>
 				<h2 class="text-success text-center mt-3 mb-4">PAGE MANAGEMENT</h2>
 				<a href="create.php" class="btn btn-primary float-right mb-3"><i class="fa fa-plus"></i></a>
-				<form action="" method="POST" name="frmList">
+				<form action="" method="POST" name="frmList" id="sbform">
 					<table class="table table-bordered">
-						<tr class=" text-center">
+						<tr>
 							<th>STT</th>
 							<th>Title</th>
 							<th>Edit</th>
@@ -106,7 +108,7 @@
 								<?php 
 									if($row['status'] == "Public" ){
 									?>
-										<a href="ftp://169.254.214.253/<?php echo $row['upload']; ?>" target="_blank" ><?php echo stripslashes($row['title']);?></a>
+										<a href="ftp://169.254.214.253/<?php echo $row['upload']; ?>" target="_blank" ><?php echo $row['title'];?></a>
 									<?php
 									}else{
 										 echo $row['title'];
@@ -128,50 +130,12 @@
 						?> 
 					</table>
 					<div class="text-center">
-						<button class="btn btn-success" type="submit" name="submit" >Upload</button>
-						<button class="btn btn-success" type="submitDel" name="submitDel">Delete</button>
+						<button class="btn btn-success" type="submit" name="submit"onclick="return submitForm()" >Upload</button>
+						<button class="btn btn-success" type="submitDel" name="submitDel" onclick="return submitForm()">Delete</button>
 					</div>
 				</form>	
 			</div>
 		</div>
 	</div>
  </body>
- <script type="text/javascript">
-	var select_all = document.getElementById("select_all"); //select all checkbox
-	var checkboxes = document.getElementsByClassName("checkbox"); //checkbox items
-
-	//select all checkboxes
-	select_all.addEventListener("change", function(e){
-		for (i = 0; i < checkboxes.length; i++) { 
-			checkboxes[i].checked = select_all.checked;
-		}
-	});
-
-	for (var i = 0; i < checkboxes.length; i++) {
-		checkboxes[i].addEventListener('change', function(e){ //".checkbox" change 
-			//uncheck "select all", if one of the listed checkbox item is unchecked
-			if(this.checked == false){
-				select_all.checked = false;
-			}
-			//check "select all" if all checkbox items are checked
-			if(document.querySelectorAll('.checkbox:checked').length == checkboxes.length){
-				select_all.checked = true;
-			}
-		});
-	}
- </script>
-<script type="text/javascript">
-	$('form').submit(function(){
-	var flag=0;
-	$('.checkbox').each(function(){
-		if(($(this).is(':checked'))){
-		flag=1
-		return false;
-		}
-	});
-	if(flag==0){
-		alert("Please Check Checkbox");
-		return false
-	}
-	});
-</script>
+ <script type="text/javascript" src="/asset/js/validate-checkbox.js"></script>

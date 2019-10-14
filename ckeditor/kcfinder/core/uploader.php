@@ -1,5 +1,6 @@
 <?php
 
+
 /** This file is part of KCFinder project
   *
   *      @desc Uploader class

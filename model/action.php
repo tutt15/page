@@ -2,6 +2,7 @@
 
 include dirname(__DIR__)."/connect/db.php"; 
 include_once dirname(__DIR__).'/config/config.php';
+include_once dirname(__DIR__).'/helpers/string_find.php';
 
 class DataOperation extends Database
 {
@@ -11,11 +12,19 @@ class DataOperation extends Database
 		$stmt->bind_param("ss", $title, $content);
 		$row = $stmt->execute();
 		if($row){
-			header("location:".ROOT_PATH."/view/list.php?msg=Page Inserted");
+			return true;
 		}else{
-			echo "Insert fail";
+			return false;
 		}
 		$stmt->close(); 
+	}
+
+
+	public function getLastId(){
+		$sql = "SELECT MAX(id) AS id FROM page LIMIT 1";
+		$query = mysqli_query($this->con,$sql);
+		$row = mysqli_fetch_array($query);
+		return $row['id'];
 	}
 
 	//Display all page
@@ -64,11 +73,11 @@ class DataOperation extends Database
 	public function updateStatusPage($id){
 		$page = $this->listPageId($id);
 		switch ($page['status']) {
-			case "New":
-				$status = "Public";
+			case STATUS_NEW:
+				$status = STATUS_PUBLIC;
 				break;
-			case "Public":
-				$status = "Public";
+			case STATUS_PUBLIC:
+				$status = STATUS_PUBLIC;
 				break;
 		}
 		$sql = "UPDATE page SET status = '$status' WHERE id = $id ";
@@ -77,33 +86,5 @@ class DataOperation extends Database
 		}
 	}
 }
-
-	$obj = new DataOperation;
-
-
-	if(isset($_POST["create"])){
-		$title = htmlspecialchars($_POST['title']);
-		$content = ($_POST['content']);
-		$obj->insertPage($title,$content);
-	}
-
-	if(isset($_POST["edit"])){
-		$id = $_POST["id"];
-		$title = htmlspecialchars($_POST['title']);
-		$content = htmlspecialchars($_POST['content']);
-		if($obj->updatePage($id, $title, $content)){
-			header("location:".ROOT_PATH."/view/list.php?msg=Updated Successfully");
-		}
-	}
-	if(isset($_GET["delete"])){
-		session_start();
-		if(!isset($_SESSION['username'])){
-			header("location:login.php");
-		}
-		$id = $_GET["id"] ;
-		if($obj->deletePage($id)){
-			header("location:".ROOT_PATH."/view/list.php?msg=Page Deleted Successfully");
-		}
-	}
-
+	
 ?>

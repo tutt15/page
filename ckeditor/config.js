@@ -4,15 +4,15 @@
  */
 CKEDITOR.editorConfig = function( config ) {
    console.log(root_path);
-   config.filebrowserBrowseUrl = root_path +'/ckeditor/kcfinder/browse.php?opener=ckeditor&type=files';
-   config.filebrowserImageBrowseUrl = root_path +'/ckeditor/kcfinder/browse.php?opener=ckeditor&type=images';
-   config.filebrowserFlashBrowseUrl = root_path +'/ckeditor/kcfinder/browse.php?opener=ckeditor&type=flash';
-   config.filebrowserUploadUrl = root_path +'/ckeditor/kcfinder/upload.php?opener=ckeditor&type=files';
-   config.filebrowserImageUploadUrl = root_path +'/ckeditor/kcfinder/upload.php?opener=ckeditor&type=images';
-   config.filebrowserFlashUploadUrl = root_path +'/ckeditor/kcfinder/upload.php?opener=ckeditor&type=flash';
+   config.filebrowserBrowseUrl = '../ckeditor/kcfinder/browse.php?opener=ckeditor&type=files';
+   config.filebrowserImageBrowseUrl = '../ckeditor/kcfinder/browse.php?opener=ckeditor&type=images';
+   config.filebrowserFlashBrowseUrl = '../ckeditor/kcfinder/browse.php?opener=ckeditor&type=flash';
+   config.filebrowserUploadUrl = '../ckeditor/kcfinder/upload.php?opener=ckeditor&type=files';
+   config.filebrowserImageUploadUrl ='../ckeditor/kcfinder/upload.php?opener=ckeditor&type=images';
+   config.filebrowserFlashUploadUrl = '../ckeditor/kcfinder/upload.php?opener=ckeditor&type=flash';
 
    config.extraPlugins = 'filebrowser';
-   config.filebrowserBrowseUrl = root_path +'/ckeditor/kcfinder/browse.php';
-   config.filebrowserUploadUrl = root_path +'/ckeditor/kcfinder/upload.php';
+   config.filebrowserBrowseUrl = '../ckeditor/kcfinder/browse.php';
+   config.filebrowserUploadUrl = '../ckeditor/kcfinder/upload.php';
 
 };

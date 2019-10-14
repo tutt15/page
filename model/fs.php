@@ -5,8 +5,8 @@ class FS
 	public function setContent($data)
 	{
 		$title = "{$data['title']}";
-		$content = stripslashes("<h2>{$data['title']}</h2>
-		<p>{$data['content']}</p>");
+		$content = "<h2>{$data['title']}</h2>
+		<p>{$data['content']}</p>";
 		return $this->bindContent($title,$content);
 	}
 

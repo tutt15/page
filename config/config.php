@@ -14,4 +14,9 @@
 	define('ROOT_PATH', 'http://localhost/page-master');
 	
 	define("DOCUMENT_ROOT","C:/xampp/htdocs");
+	define("DOMAIN", "cmslocalpage.vn/");
+
+	define("STATUS_NEW", "New");
+	define("STATUS_PUBLIC", "Public");
+
  ?>

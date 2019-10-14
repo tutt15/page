@@ -27,17 +27,8 @@ $uploader = new uploader();
 $uploader->upload();
 
 $urlReturn = $uploader->filePath;
-
-
-// $urlLocal = str_replace("%20", " ", $urlReturn);
-
 $localPath = DOCUMENT_ROOT . $urlReturn;
-
-$ftp_path = str_replace("/page-master", "", $urlReturn);
-
-// $ftp_path = "/test.jpg";
-
-
+$ftp_path =  $urlReturn;
 $upload = ftp_put($conn_id, $ftp_path, $localPath, FTP_BINARY);
 
 ?>
