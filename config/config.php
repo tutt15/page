@@ -19,4 +19,7 @@
 	define("STATUS_NEW", "New");
 	define("STATUS_PUBLIC", "Public");
 
+	define("FTP_FILE", "C:/xampp/htdocs/ftp_page");
+	define("LOCAL_FILE", "C:/xampp/htdocs/page-master");
+
  ?>
