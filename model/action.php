@@ -2,34 +2,30 @@
 
 include dirname(__DIR__)."/connect/db.php"; 
 include_once dirname(__DIR__).'/config/config.php';
-include_once dirname(__DIR__).'/helpers/string_find.php';
 
 class DataOperation extends Database
 {
 	//Create new page
-	public function insertPage($title, $content){
-		$stmt = $this->con->prepare('INSERT INTO page (title, content) VALUES (?,?)') ;
-		$stmt->bind_param("ss", $title, $content);
-		$row = $stmt->execute();
-		if($row){
-			return true;
-		}else{
+	public function insert($table, $fields = array()){
+		if($table == ""){
 			return false;
 		}
-		$stmt->close(); 
-	}
-
-
-	public function getLastId(){
-		$sql = "SELECT MAX(id) AS id FROM page LIMIT 1";
-		$query = mysqli_query($this->con,$sql);
-		$row = mysqli_fetch_array($query);
-		return $row['id'];
+		$sql = "";
+		$sql .= "INSERT INTO ".$table;
+		$sql .= "(".implode(",",array_keys($fields)).") VALUES";
+		$sql .= "('".implode("','", array_values($fields))."')";
+		$result = mysqli_query($this->con,$sql);
+		if($result){
+			return true;
+		}
 	}
 
 	//Display all page
-	public function listPage (){
-		$sql = "SELECT * FROM page";
+	public function listPage ($table){
+		if($table == ""){
+			return false;
+		}
+		$sql = "SELECT * FROM ".$table;
 		$array = array();
 		$query = mysqli_query($this->con,$sql);
 		while($row = mysqli_fetch_assoc($query)){
@@ -38,53 +34,67 @@ class DataOperation extends Database
 		return $array;
 	}
 
-	//Display page follow id
-	public function listPageId($id){
-		$sql = "SELECT * FROM page WHERE id = $id";
+	public function listPageById($table, $where = array()){
+		if($table == ""){
+			return false;
+		}
+		$colums = "*";
+		$condition = "";
+		if(!empty($where)){
+			foreach ($where as $key => $value) {
+				$condition .= $key . "='" . $value . "'AND";
+			}
+		}
+		$condition = substr($condition, 0 , -3);
+		$sql = "SELECT $colums FROM $table WHERE $condition ";
 		$query = mysqli_query($this->con,$sql);
-		$row = mysqli_fetch_array($query);
-		return $row;
+		$result = mysqli_fetch_array($query);
+		return $result;
 	}
 
 	//Update page 
-	public function updatePage($id, $title, $content){
-		$sql = "UPDATE page SET title = '$title',content = '$content' WHERE id = $id ";
+	public function update($table, $where = array() , $fields = array()){
+		if($table == ""){
+			return false;
+		}
+		$colums = "";
+		$condition = "";
+		if(!empty($where)){
+			foreach ($where as $key => $value) {
+				$condition .= $key . "='" . $value . "'AND";
+			}
+		}
+		$condition = substr($condition, 0, -3);
+		if(!empty($fields)){
+			foreach ($fields as $key => $value) {
+				$colums .= $key . "='" .$value. "',";
+			}
+		}
+		$colums = substr($colums, 0 , -1);
+		$sql = "UPDATE $table SET $colums WHERE $condition ";
+		//var_dump($sql);die();
+		$result = mysqli_query($this->con,$sql);
+		if($result){
+			return true;
+		}
+	}
+
+	public function delete($table, $where = array()){
+		if ($table == "") {
+			return false;
+		}
+		$condition = "";
+		if(!empty($where)){
+			foreach ($where as $key => $value) {
+				$condition .= $key . "='" . $value . "'AND";
+			}
+		}
+		$condition = substr($condition, 0 , -3);
+		$sql = "DELETE FROM $table  WHERE $condition";
 		if(mysqli_query($this->con,$sql)){
 			return true;
 		}
 	}
 
-	public function updateFile($id,$upload){
-		$sql = "UPDATE page SET upload = '$upload' WHERE id = $id ";
-		if(mysqli_query($this->con,$sql)){
-			return true;
-		}
-	}
-
-	//Delete page
-	public function deletePage($id){
-		$sql = "DELETE FROM page WHERE id = '$id'";
-		if(mysqli_query($this->con,$sql)){
-			return true;
-		}
-	}
-
-	//Update status page
-	public function updateStatusPage($id){
-		$page = $this->listPageId($id);
-		switch ($page['status']) {
-			case STATUS_NEW:
-				$status = STATUS_PUBLIC;
-				break;
-			case STATUS_PUBLIC:
-				$status = STATUS_PUBLIC;
-				break;
-		}
-		$sql = "UPDATE page SET status = '$status' WHERE id = $id ";
-		if(mysqli_query($this->con,$sql)){
-			return true;
-		}
-	}
 }
-	
 ?>
