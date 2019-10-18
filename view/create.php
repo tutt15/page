@@ -1,14 +1,18 @@
 <?php
-	include dirname(__DIR__)."/model/controller.php";
+	include dirname(__DIR__)."/controller/page.php";
 	include dirname(__DIR__)."/templates/page/header.php";
-	
  ?>
+ <style>
+	.error{
+		color:red;
+	}
+ </style>
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
 			<h2 class="text-success text-center mt-3 mb-4">CREATE PAGE </h2>
 			<a href="list.php" class="btn btn-danger"><i class="fa fa-home"></i></a>
-			<form method="POST" id="frmCreate" action="../model/controller.php">
+			<form method="POST" id="frmCreate" action="<?php dirname(__DIR__) ?>/controller/page.php">
 				<table class="table table-hover">
 					<tr>
 						<td>Title</td>
@@ -28,34 +32,5 @@
 		</div>
 	</div>
 </div>
-<script type=text/javascript>
-	$(document).ready(function(){
-		$('#frmCreate').validate({
-			ignore: [],
-			debug: false,
-			rules:{
-				title:{
-					required: true,
-				},
-				content:{
-					required: function(textarea) {
-						CKEDITOR.instances[textarea.id].updateElement(); // update textarea
-						var editorcontent = textarea.value.replace(/<[^>]*>/gi, ''); // strip tags
-						return editorcontent.length === 0;
-					}
-				},
-			},
-			messages:{
-				title:{
-					required: "Please enter title",
-				},	
-				content:{
-					required: "Please enter content",
-				}
-			}
-		});
-	});
-</script>
-<?php 
-	include dirname(__DIR__)."/templates/page/footer.php";
-?>
+<script type="text/javascript" src="/asset/js/validate_form_create.js"></script>
+<?php include dirname(__DIR__)."/templates/page/footer.php";?>

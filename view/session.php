@@ -17,7 +17,4 @@
 	}
 	mysqli_close($conn);
 
-
-	
-
  ?>

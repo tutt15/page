@@ -1,12 +1,15 @@
 <?php
 
 	include dirname(__DIR__). "/templates/page/header.php";
-	include dirname(__DIR__). "/model/controller.php";
+	include dirname(__DIR__). "/controller/page.php";
 	include dirname(__DIR__)."/view/session.php";
 
-	if(isset($_GET["update"])){
+	if(isset($_GET["id"])){
 		$id = $_GET["id"] ?? null;
-		$row = $obj->listPageId($id);
+		$where = array(
+			"id"=>$id,
+		);
+		$row = $obj->listPageById("page", $where);
 	}
 ?>
 <div class="container">
@@ -14,7 +17,7 @@
 		<div class="col-md-12">
 			<h2 class="text-success text-center mt-3 mb-4">UPDATE PAGE </h2>
 			<a href="list.php" class="btn btn-danger"><i class="fa fa-home"></i></a>
-			<form method="post" action="../model/controller.php">
+			<form method="post" action="<?php dirname(__DIR__) ?>/controller/page.php">
 				<table class="table table-hover">
 					<tr class="hidden">
 						<td><input type="hidden" name="id" value="<?php echo $id; ?>"></td>

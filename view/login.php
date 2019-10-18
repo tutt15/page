@@ -21,7 +21,7 @@
                $error = "Wrong username or password";
             }else{
                 $_SESSION['username'] = $username;
-                header('Location:../view/list.php');
+                header('Location:list.php');
             }
         }
     }
