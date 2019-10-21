@@ -12,12 +12,11 @@
         $password = strip_tags($password);
         $password = addslashes($password);
         if ($username == "" || $password =="") {
-            echo "Please enter password or username";
+            $error =  "Please enter password or username";
         }else{
-            $sql = "select * from user where username = '$username' and password = '$password' ";
-            $query = mysqli_query($conn,$sql);
-            $num_rows = mysqli_num_rows($query);
-            if ($num_rows==0) {
+			$sql_login = new DataOperation();
+			$sql = $sql_login ->listPageById("user", ["username" => $username, "password" => $password]);
+            if ($sql == 0) {
                $error = "Wrong username or password";
             }else{
                 $_SESSION['username'] = $username;
