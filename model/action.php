@@ -21,33 +21,59 @@ class DataOperation extends Database
 	}
 
 	//Display all page
-	public function listPage ($table){
-		if($table == ""){
+	// public function listPage ($table){
+	// 	if($table == ""){
+	// 		return false;
+	// 	}
+	// 	$sql = "SELECT * FROM ".$table;
+	// 	$array = array();
+	// 	$query = mysqli_query($this->con,$sql);
+	// 	while($row = mysqli_fetch_assoc($query)){
+	// 		$array[] = $row;
+	// 	}
+	// 	return $array;
+	// }
+	
+	public function listPage($table, $fields = array()){
+		if ($table == "") {
 			return false;
 		}
-		$sql = "SELECT * FROM ".$table;
-		$array = array();
-		$query = mysqli_query($this->con,$sql);
-		while($row = mysqli_fetch_assoc($query)){
-			$array[] = $row;
+		$colums = "*";
+		if (!empty($fields)) {
+			$colums = implode(',',$fields);
 		}
+		$array = array();
+		$sql = "SELECT $colums FROM $table ORDER BY `id` DESC";
+		$results = mysqli_query($this->con,$sql);
+		while($row = mysqli_fetch_assoc($results)){
+		 		$array[] = $row;
+	 	}
 		return $array;
+ 
 	}
 
-	public function listPageById($table, $where = array()){
+
+	public function listPageById($table, $where = array(), $fields = array()){
 		if($table == ""){
 			return false;
 		}
 		$colums = "*";
 		$condition = "";
+		if (!empty($fields)) {
+			$colums = implode(",",$fields);
+		}
 		if(!empty($where)){
 			foreach ($where as $key => $value) {
-				$condition .= $key . "='" . $value . "'AND";
+				$condition .= $key . "='" . $value . "' AND ";
 			}
 		}
-		$condition = substr($condition, 0 , -3);
+		$condition = substr($condition, 0 , -4);
 		$sql = "SELECT $colums FROM $table WHERE $condition ";
 		$query = mysqli_query($this->con,$sql);
+		// if (!$query) {
+		// 	printf("Error: %s\n", mysqli_error($this->con));
+		// 	exit();
+		// }
 		$result = mysqli_fetch_array($query);
 		return $result;
 	}
@@ -61,10 +87,10 @@ class DataOperation extends Database
 		$condition = "";
 		if(!empty($where)){
 			foreach ($where as $key => $value) {
-				$condition .= $key . "='" . $value . "'AND";
+				$condition .= $key . "='" . $value . "' AND ";
 			}
 		}
-		$condition = substr($condition, 0, -3);
+		$condition = substr($condition, 0, -4);
 		if(!empty($fields)){
 			foreach ($fields as $key => $value) {
 				$colums .= $key . "='" .$value. "',";
@@ -72,7 +98,6 @@ class DataOperation extends Database
 		}
 		$colums = substr($colums, 0 , -1);
 		$sql = "UPDATE $table SET $colums WHERE $condition ";
-		//var_dump($sql);die();
 		$result = mysqli_query($this->con,$sql);
 		if($result){
 			return true;
