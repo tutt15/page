@@ -1,5 +1,5 @@
 <?php
-	include_once dirname(__DIR__)."../../config/config.php";
+	include_once dirname(__DIR__,2)."/config/config.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
