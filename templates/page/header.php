@@ -1,6 +1,6 @@
 <?php 
 	session_start();
-	include_once dirname(__DIR__).'../../config/config.php';
+	include_once dirname(__DIR__,2).'/config/config.php';
 	if(!isset($_SESSION['username'])){
 		header("location:login.php");
 	  }
