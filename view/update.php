@@ -9,7 +9,7 @@
 		$where = array(
 			"id"=>$id,
 		);
-		$row = $obj->listPageById("page", $where);
+		$row = $obj->listByValue("page", $where);
 	}
 ?>
 <div class="container">

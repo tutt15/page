@@ -1,3 +1,1 @@
-#RewriteEngine On
-#RewriteCond %{HTTP_HOST} ^cmslocalpage.vn/$
-#RewriteRule ^$ http://cmslocalpage.vn/view/list.php [L,R=301]
+

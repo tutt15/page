@@ -4,7 +4,7 @@
 	$username=$_SESSION['username'];
 	$conn = mysqli_connect(HOST,USERNAME,PASSWORD,DATABASE);
 	$sql_login = new DataOperation();
-	$sql = $sql_login ->listPageById("user", ["username" => $username],["username"]);
+	$sql = $sql_login ->listByValue("user", ["username" => $username],["username"]);
 
 	if(!isset($_SESSION['username'])){
 	  header("location:login.php");

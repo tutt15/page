@@ -9,13 +9,13 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 			foreach ($_POST['checkbox'] as $key => $value) {
 				// FTP Upload file to server
 				//$page = $obj->listPageId($value);
-				$page = $obj->listPageById("page",["id"=>$value]);
+				$page = $obj->listByValue('page',['id'=>$value]);
 				$content = $fs->setContent($page);
 				$file_pointer = dirname(__DIR__).'/'. 'page'. $value .'.html'; 
 				file_put_contents($file_pointer, $content);
 				
 				$subject = file_get_contents(dirname(__DIR__).'/'. 'page'. $value .'.html');
-				$update = dirname(__DIR__).'/'. 'page'. $value .'.html';
+				$update  = dirname(__DIR__).'/'. 'page'. $value .'.html';
 				$pattern = "/\/ckeditor/";
 				$replace = 'ckeditor';
 				file_put_contents($update,preg_replace($pattern, $replace, $subject));
@@ -28,8 +28,11 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 				$regex = '/src="([^"]+)"/'; 
 				//return all result link folder image.
 				preg_match_all($regex, $content, $matches, PREG_SET_ORDER, 0);
+				//var_dump($matches);die();
 				//folder ftp page.
+				//ftp_pwd: return current folder name.
 				$dir_page = ftp_pwd($conn_id).$value;
+				//var_dump($dir_page);die();
 				//return all folder in folder root ftp
 				$content_ftp = ftp_nlist($conn_id,ftp_pwd($conn_id));
 				//Check if the public folder is in the ftp directory .
@@ -38,8 +41,10 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 					foreach($matches as $val){
 						//get path of images  in the local directory.
 						$get_link_img = LOCAL_FILE.$val[1];
+						
 						//pathinfo: get infomation path tranmission.
 						$path_info = pathinfo($get_link_img);
+						//var_dump($path_info);die();
 						//return name image.
 						$get_img_name = $path_info['basename'];
 						//path folder contain images 
@@ -54,6 +59,7 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 
 					foreach($check_content_child_folder as $check){
 						$path_info_check = pathinfo($check);
+						//var_dump($path_info_check);die();
 						if($path_info_check['extension']!='hmtl'){
 							$list_content[] = $path_info_check['basename'];
 						}
@@ -62,10 +68,9 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 					//check images in folder page ftp have empty 
 					if (!empty($img_using)) {
 						$get_array_non_using = array_diff($list_content, $img_using);
+						//var_dump($get_array_non_using);die();
 						foreach($get_array_non_using as $remove) {
-							if (!ftp_delete($conn_id, $dir_page . "/$remove")) {
-								echo "Cant delete this file $remove cause file not exist or deleted.";
-							}
+							@ftp_delete($conn_id, FTP_FILE.$dir_page . "/$remove");
 						}
 					}
 				}else{
@@ -77,18 +82,18 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 							$get_img_name = $path_info['basename'];
 							$link_path = $dir_page.'/'.$get_img_name;
 							if(!ftp_put($conn_id,$link_path,$get_link_img,FTP_BINARY)){
-								echo "Error";
+								echo 'Error';
 							}
 						}
 					}
 				}
-				$link_temp = "file_temp.html";
-				$ftp_file= FTP_FILE."/".$value."/";
-				$replace_up = str_replace("ckeditor/kcfinder/upload/images/",$ftp_file,file_get_contents($local_file));
+				$link_temp = 'file_temp.html';
+				$ftp_file= '/'.$value.'/';
+				$replace_up = str_replace('ckeditor/kcfinder/upload/images/',$ftp_file,file_get_contents($local_file));
 				file_put_contents($link_temp,$replace_up);
 				$upload = ftp_put($conn_id, $dir_page . "/page$value.html", $link_temp, FTP_ASCII);
-				file_put_contents($link_temp, "");
-				$file_update = 'page'. $value .'.html';
+				file_put_contents($link_temp, '');
+				//$file_update = 'page'. $value .'.html';
 				$dataOperation = new DataOperation();
 				//var_dump($page_status);die();
 				switch ($page['status']) {
@@ -99,12 +104,10 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 						$status = STATUS_PUBLIC;
 						break;
 				}
-				$dataOperation->update("page",["id"=>$value],["status"=>$status]);
+				$dataOperation->update('page',['id'=>$value],['status'=>$status]);
 				// Update link upload 
-				$dataOperation->update("page",["id"=>$value],["upload"=>$ftp_path]);
+				$dataOperation->update('page',['id'=>$value],['upload'=>$ftp_path]);
 				// Update status page
-
-				
 			}
 			if ($upload) {
 				$id_upload = implode('-', $arr_upload);

@@ -2,6 +2,7 @@
 	include dirname(__DIR__)."/model/action.php";
 	include_once dirname(__DIR__)."/templates/login/header.php";
 	session_start();
+	
 	$conn = mysqli_connect(HOST,USERNAME,PASSWORD,DATABASE);
 	$error ="";
     if (isset($_POST["login"])) {
@@ -15,7 +16,7 @@
             $error =  "Please enter password or username";
         }else{
 			$sql_login = new DataOperation();
-			$sql = $sql_login ->listPageById("user", ["username" => $username, "password" => $password]);
+			$sql = $sql_login ->listByValue("user", ["username" => $username, "password" => $password]);
             if ($sql == 0) {
                $error = "Wrong username or password";
             }else{

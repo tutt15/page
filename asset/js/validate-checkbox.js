@@ -31,7 +31,7 @@
 			}
 		});
 		if(flag==0){
-			alert("Please Check Checkbox");
+			alert("Please check checkbox");
 			return false;
 		}
 		if(confirm('Are you sure?')) {

@@ -7,38 +7,25 @@ class DataOperation extends Database
 {
 	//Create new page
 	public function insert($table, $fields = array()){
-		if($table == ""){
+		if($table == ''){
 			return false;
 		}
-		$sql = "";
-		$sql .= "INSERT INTO ".$table;
-		$sql .= "(".implode(",",array_keys($fields)).") VALUES";
+		$sql = 'INSERT INTO '.$table;
+		$sql .= '('.implode(',',array_keys($fields)).') VALUES';
 		$sql .= "('".implode("','", array_values($fields))."')";
 		$result = mysqli_query($this->con,$sql);
 		if($result){
 			return true;
 		}
+		return false;
 	}
 
 	//Display all page
-	// public function listPage ($table){
-	// 	if($table == ""){
-	// 		return false;
-	// 	}
-	// 	$sql = "SELECT * FROM ".$table;
-	// 	$array = array();
-	// 	$query = mysqli_query($this->con,$sql);
-	// 	while($row = mysqli_fetch_assoc($query)){
-	// 		$array[] = $row;
-	// 	}
-	// 	return $array;
-	// }
-	
-	public function listPage($table, $fields = array()){
-		if ($table == "") {
+	public function listAllValue($table, $fields = array()){
+		if ($table == '') {
 			return false;
 		}
-		$colums = "*";
+		$colums = '*';
 		if (!empty($fields)) {
 			$colums = implode(',',$fields);
 		}
@@ -53,14 +40,14 @@ class DataOperation extends Database
 	}
 
 
-	public function listPageById($table, $where = array(), $fields = array()){
-		if($table == ""){
+	public function listByValue($table, $where = array(), $fields = array()){
+		if($table == ''){
 			return false;
 		}
-		$colums = "*";
-		$condition = "";
+		$colums = '*';
+		$condition = '';
 		if (!empty($fields)) {
-			$colums = implode(",",$fields);
+			$colums = implode(',',$fields);
 		}
 		if(!empty($where)){
 			foreach ($where as $key => $value) {
@@ -73,27 +60,26 @@ class DataOperation extends Database
 		// if (!$query) {
 		// 	printf("Error: %s\n", mysqli_error($this->con));
 		// 	exit();
-		// }
 		$result = mysqli_fetch_array($query);
 		return $result;
 	}
 
 	//Update page 
 	public function update($table, $where = array() , $fields = array()){
-		if($table == ""){
+		if($table == ''){
 			return false;
 		}
-		$colums = "";
-		$condition = "";
+		$colums = '';
+		$condition = '';
 		if(!empty($where)){
 			foreach ($where as $key => $value) {
-				$condition .= $key . "='" . $value . "' AND ";
+				$condition .= $key . " = '" . $value . "' AND ";
 			}
 		}
 		$condition = substr($condition, 0, -4);
 		if(!empty($fields)){
 			foreach ($fields as $key => $value) {
-				$colums .= $key . "='" .$value. "',";
+				$colums .= $key . " = '" .$value. "',";
 			}
 		}
 		$colums = substr($colums, 0 , -1);
@@ -102,13 +88,14 @@ class DataOperation extends Database
 		if($result){
 			return true;
 		}
+		return false;
 	}
 
 	public function delete($table, $where = array()){
-		if ($table == "") {
+		if ($table == '') {
 			return false;
 		}
-		$condition = "";
+		$condition = '';
 		if(!empty($where)){
 			foreach ($where as $key => $value) {
 				$condition .= $key . "='" . $value . "'AND";
@@ -119,6 +106,7 @@ class DataOperation extends Database
 		if(mysqli_query($this->con,$sql)){
 			return true;
 		}
+		return false;
 	}
 
 }

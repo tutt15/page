@@ -5,6 +5,7 @@
 	include dirname(__DIR__). "/controller/delete.php";
 	include dirname(__DIR__). "/controller/upload.php";
 
+
 	if(isset($_GET['msg'])){
 		echo "<div class='container alert alert-success'>Succeeded!</div>";
 	}
@@ -29,7 +30,8 @@
 							</th>
 						</tr>
 						<?php
-							$myrow = $obj->listPage("page");
+							//$myrow = $obj->listPage("page");
+							$myrow = $obj->listAllValue('page');
 							foreach ($myrow as $row) {
 						?>
 						<tr>
@@ -38,7 +40,7 @@
 								<?php 
 									if($row['status'] == "Public" ){
 									?>
-										<a href="ftp://169.254.214.253<?php echo '/'.$row['id'].$row['upload']; ?>" target="_blank" ><?php echo $row['title'];?></a>
+										<a href="ftp://<?php echo FTPHOST.'/'.$row['id'].$row['upload']; ?>" target="_blank" ><?php echo $row['title'];?></a>
 									<?php
 									}else{
 										 echo $row['title'];
@@ -68,12 +70,12 @@
 		</div>
 	</div>
  </body>
- <script type="text/javascript" src="/asset/js/validate-checkbox.js"></script>
+<script type="text/javascript" src="/asset/js/validate-checkbox.js"></script>
 
 <script>
 	$(document).ready(function() {
-    setTimeout(function() {
-        $(".alert").alert('close');
-    }, 1500);
-});
+		setTimeout(function() {
+			$(".alert").alert('close');
+		}, 1500);
+	});
 </script>

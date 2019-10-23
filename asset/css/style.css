@@ -1,4 +1,7 @@
 /* s */
+#title-error{
+	color: red;
+}
 table {
 	border-collapse: collapse;
 }

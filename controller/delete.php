@@ -15,20 +15,20 @@
                 $arDel[] = $value;
                 //delete page in database
                 //$page = $obj->deletePage($value);
-                $page = $obj->delete("page",["id"=> $value]);
+                $page = $obj->delete('page',['id'=> $value]);
                 //delete page in local 
                 unlink($link);
                 //check content inside in folder page.
-                $content_folder = ftp_nlist($conn_id, $folder_page_ftp . "/");
+                $content_folder = ftp_nlist($conn_id, $folder_page_ftp . '/');
                 foreach ($content_folder as $need_remove) {
-                    $need_remove ="/".$need_remove;
+                    $need_remove ='/'.$need_remove;
                     //Delete content in folder page ftp
                     if (!ftp_delete($conn_id, $need_remove)) {
                         echo "Cant delete content inside folder $value.";
                         break;
                     }
                 }
-                $name_folder_page = "/". $folder_page_ftp;
+                $name_folder_page = '/'. $folder_page_ftp;
                 //delete folder page.
                 if (!ftp_rmdir($conn_id, $name_folder_page)) {
                     echo "Cant delete this folder $value at it's address: $folder_page_ftp";
@@ -37,7 +37,7 @@
             }else{
                 $arDel[] = $value;
                 //$page = $obj->deletePage($value);
-                $page = $obj->delete("page",["id"=> $value]);
+                $page = $obj->delete('page',['id'=> $value]);
             }
         }
         if(isset($arDel)){

@@ -32,7 +32,7 @@
 		$where = array(
 			"id" => $id,
 		);
-		if($obj->deletePage("page", $where)){
+		if($obj->delete("page", $where)){
 			header("location:/view/list.php");
 		}
 	}
