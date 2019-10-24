@@ -28,11 +28,9 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 				$regex = '/src="([^"]+)"/'; 
 				//return all result link folder image.
 				preg_match_all($regex, $content, $matches, PREG_SET_ORDER, 0);
-				//var_dump($matches);die();
 				//folder ftp page.
 				//ftp_pwd: return current folder name.
 				$dir_page = ftp_pwd($conn_id).$value;
-				//var_dump($dir_page);die();
 				//return all folder in folder root ftp
 				$content_ftp = ftp_nlist($conn_id,ftp_pwd($conn_id));
 				//Check if the public folder is in the ftp directory .
@@ -41,7 +39,6 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 					foreach($matches as $val){
 						//get path of images  in the local directory.
 						$get_link_img = LOCAL_FILE.$val[1];
-						
 						//pathinfo: get infomation path tranmission.
 						$path_info = pathinfo($get_link_img);
 						//var_dump($path_info);die();

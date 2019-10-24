@@ -21,7 +21,7 @@ class DataOperation extends Database
 	}
 
 	//Display all page
-	public function listAllValue($table, $fields = array()){
+	public function listAllValue($table, $where = array(), $fields = array() ){
 		if ($table == '') {
 			return false;
 		}
@@ -29,13 +29,40 @@ class DataOperation extends Database
 		if (!empty($fields)) {
 			$colums = implode(',',$fields);
 		}
+		//clause query after from table 
+		$clause = '';
+		if(!empty($where)){
+			$clause = implode(',',$where);
+		}
 		$array = array();
-		$sql = "SELECT $colums FROM $table ORDER BY `id` DESC";
+		$sql = 'SELECT  '.$colums.' FROM '.$table.' '.$clause;
 		$results = mysqli_query($this->con,$sql);
 		while($row = mysqli_fetch_assoc($results)){
 		 		$array[] = $row;
 	 	}
 		return $array;
+ 
+	}
+
+	public function listAllValueByClause($table, $where = array(), $fields = array() ){
+		if ($table == '') {
+			return false;
+		}
+		$colums = '*';
+		if (!empty($fields)) {
+			$colums = implode(',',$fields);
+		}
+		//clause query after from table 
+		$clause = '';
+		if(!empty($where)){
+			$clause = implode(',',$where);
+		}
+		$array = array();
+		$sql = 'SELECT '.$clause.'('.$colums.')'.' FROM '.$table;
+		//var_dump($sql);die();
+		$results = mysqli_query($this->con,$sql);
+		$row = mysqli_fetch_row($results);  
+		return $row;
  
 	}
 
@@ -55,7 +82,7 @@ class DataOperation extends Database
 			}
 		}
 		$condition = substr($condition, 0 , -4);
-		$sql = "SELECT $colums FROM $table WHERE $condition ";
+		$sql = 'SELECT '.$colums.' FROM '.$table.' WHERE '.$condition ;
 		$query = mysqli_query($this->con,$sql);
 		// if (!$query) {
 		// 	printf("Error: %s\n", mysqli_error($this->con));
@@ -83,7 +110,7 @@ class DataOperation extends Database
 			}
 		}
 		$colums = substr($colums, 0 , -1);
-		$sql = "UPDATE $table SET $colums WHERE $condition ";
+		$sql = 'UPDATE '.$table.' SET '.$colums.' WHERE '.$condition;
 		$result = mysqli_query($this->con,$sql);
 		if($result){
 			return true;
@@ -102,7 +129,7 @@ class DataOperation extends Database
 			}
 		}
 		$condition = substr($condition, 0 , -3);
-		$sql = "DELETE FROM $table  WHERE $condition";
+		$sql = 'DELETE FROM '.$table.'  WHERE '.$condition;
 		if(mysqli_query($this->con,$sql)){
 			return true;
 		}
