@@ -9,6 +9,8 @@
 	if(isset($_GET['msg'])){
 		echo "<div class='container alert alert-success'>Succeeded!</div>";
 	}
+
+	//Panigation
 	if (isset($_GET["page"])) {
 		$page  = $_GET["page"]; 
 	} 
@@ -16,9 +18,9 @@
 		$page=1;
 	} 
 	$limit = 5; 
-	$offset = ($page-1) * $limit;  
+	$offset = ($page-1) * $limit;
+
 	
-  
  ?>
  <body>
 	<div class="container">
@@ -74,17 +76,17 @@
 						<button class="btn btn-success float-right" type="submitDel" name="submitDel" onclick="return submitForm()"><i class="fa fa-trash"></i></button>
 						<button class="btn btn-success float-right" type="submit"    name="submit"    onclick="return submitForm()"><i class="fa fa-upload"></i></button>
 					</div>
-					<?php  
+					<?php
 						$result_db = $obj->listAllValueByClause('page', ['COUNT']);
 						$total_records = $result_db[0];
-						$total_pages = ceil($total_records / $limit); 
-						$panigate = "<ul class='pagination'>";  
+						$total_pages = ceil($total_records / $limit);
+						$panigate = "<ul class='pagination'>";
 						for ($i=1; $i<=$total_pages; $i++) {
 								$panigate .= "<li class='page-item'><a class='page-link' href='list.php?page=".$i."'>".$i."</a></li>";	
 						}
-						echo $panigate . "</ul>";  
-?>
-				</form>	
+						echo $panigate . "</ul>";
+					?>
+				</form>
 			</div>
 		</div>
 	</div>

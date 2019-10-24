@@ -5,21 +5,7 @@ include_once dirname(__DIR__).'/config/config.php';
 
 class DataOperation extends Database
 {
-	//Create new page
-	public function insert($table, $fields = array()){
-		if($table == ''){
-			return false;
-		}
-		$sql = 'INSERT INTO '.$table;
-		$sql .= '('.implode(',',array_keys($fields)).') VALUES';
-		$sql .= "('".implode("','", array_values($fields))."')";
-		$result = mysqli_query($this->con,$sql);
-		if($result){
-			return true;
-		}
-		return false;
-	}
-
+	
 	//Display all page
 	public function listAllValue($table, $where = array(), $fields = array() ){
 		if ($table == '') {
@@ -41,32 +27,9 @@ class DataOperation extends Database
 		 		$array[] = $row;
 	 	}
 		return $array;
- 
+
 	}
-
-	public function listAllValueByClause($table, $where = array(), $fields = array() ){
-		if ($table == '') {
-			return false;
-		}
-		$colums = '*';
-		if (!empty($fields)) {
-			$colums = implode(',',$fields);
-		}
-		//clause query after from table 
-		$clause = '';
-		if(!empty($where)){
-			$clause = implode(',',$where);
-		}
-		$array = array();
-		$sql = 'SELECT '.$clause.'('.$colums.')'.' FROM '.$table;
-		//var_dump($sql);die();
-		$results = mysqli_query($this->con,$sql);
-		$row = mysqli_fetch_row($results);  
-		return $row;
- 
-	}
-
-
+	//Display values according to the input fields with the condition
 	public function listByValue($table, $where = array(), $fields = array()){
 		if($table == ''){
 			return false;
@@ -89,6 +52,44 @@ class DataOperation extends Database
 		// 	exit();
 		$result = mysqli_fetch_array($query);
 		return $result;
+	}
+	
+	//Display values according to the clauses: (ex: COUNT(), MAX(), MIN(), AVG(), SUM())
+	public function listAllValueByClause($table, $where = array(), $fields = array() ){
+		if ($table == '') {
+			return false;
+		}
+		$colums = '*';
+		if (!empty($fields)) {
+			$colums = implode(',',$fields);
+		}
+		//clause query after from table 
+		$clause = '';
+		if(!empty($where)){
+			$clause = implode(',',$where);
+		}
+		$array = array();
+		$sql = 'SELECT '.$clause.'('.$colums.')'.' FROM '.$table;
+		//var_dump($sql);die();
+		$results = mysqli_query($this->con,$sql);
+		$row = mysqli_fetch_row($results);  
+		return $row;
+ 
+	}
+
+	//Create new page
+	public function insert($table, $fields = array()){
+		if($table == ''){
+			return false;
+		}
+		$sql = 'INSERT INTO '.$table;
+		$sql .= '('.implode(',',array_keys($fields)).') VALUES';
+		$sql .= "('".implode("','", array_values($fields))."')";
+		$result = mysqli_query($this->con,$sql);
+		if($result){
+			return true;
+		}
+		return false;
 	}
 
 	//Update page 
