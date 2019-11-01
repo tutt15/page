@@ -1,7 +1,7 @@
 <?php 
-include dirname(__DIR__)."/controller/page.php";
-include dirname(__DIR__)."/model/fs.php";
-include dirname(__DIR__). "/connect/ftpconect.php";
+	include dirname(__DIR__)."/controller/page.php";
+	include dirname(__DIR__)."/model/fs.php";
+	include dirname(__DIR__). "/connect/ftpconect.php";
 //Check  upload
 	if (isset($_POST['submit'])) {
 		if (!empty($_POST['checkbox'])) {
@@ -19,7 +19,12 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 				$pattern = "/\/ckeditor/";
 				$replace = 'ckeditor';
 				file_put_contents($update,preg_replace($pattern, $replace, $subject));
-				
+
+				//video 
+				$pattern_video = "https://www.youtube.com/watch?v=";
+				$replace_video = "https://www.youtube.com/embed/";
+				file_put_contents($update,str_replace($pattern_video, $replace_video, $subject));
+
 				$arr_upload[] =  $value;
 				$local_file = dirname(__DIR__).'/'.'page'. $value .'.html';
 				$ftp_path = '/'.'page'. $value .'.html';
@@ -31,6 +36,7 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 				//folder ftp page.
 				//ftp_pwd: return current folder name.
 				$dir_page = ftp_pwd($conn_id).$value;
+				var_dump($dir_page);die();
 				//return all folder in folder root ftp
 				$content_ftp = ftp_nlist($conn_id,ftp_pwd($conn_id));
 				//Check if the public folder is in the ftp directory .
@@ -47,7 +53,7 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 						//path folder contain images 
 						$link_path = $dir_page.'/'.$get_img_name;
 						//using ftp_put transfer images  to folder ftp contain page 
-						if(ftp_put($conn_id,$link_path,$get_link_img,FTP_BINARY)){
+						if(@ftp_put($conn_id,$link_path,$get_link_img,FTP_BINARY)){
 							$img_using[] = $get_img_name;
 						}
 					}
@@ -78,14 +84,14 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 							$path_info = pathinfo($get_link_img);
 							$get_img_name = $path_info['basename'];
 							$link_path = $dir_page.'/'.$get_img_name;
-							if(!ftp_put($conn_id,$link_path,$get_link_img,FTP_BINARY)){
+							if(@(!ftp_put($conn_id,$link_path,$get_link_img,FTP_BINARY))){
 								echo 'Error';
 							}
 						}
 					}
 				}
 				$link_temp = 'file_temp.html';
-				$ftp_file= '/'.$value.'/';
+				$ftp_file= $value.'/';
 				$replace_up = str_replace('ckeditor/kcfinder/upload/images/',$ftp_file,file_get_contents($local_file));
 				file_put_contents($link_temp,$replace_up);
 				$upload = ftp_put($conn_id, $dir_page . "/page$value.html", $link_temp, FTP_ASCII);
@@ -96,10 +102,13 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 				switch ($page['status']) {
 					case STATUS_NEW:
 						$status = STATUS_PUBLIC;
-						break;
+					break;
+					case STATUS_UPDATE:
+						$status = STATUS_PUBLIC;
+					break;
 					case STATUS_PUBLIC:
 						$status = STATUS_PUBLIC;
-						break;
+					break;
 				}
 				$dataOperation->update('page',['id'=>$value],['status'=>$status]);
 				// Update link upload 
@@ -110,7 +119,7 @@ include dirname(__DIR__). "/connect/ftpconect.php";
 				$id_upload = implode('-', $arr_upload);
 				echo "<div class='container alert alert-success'>Upload successfull $id_upload.</div>";
 			}else{
-				echo "<div class='container alert alert-danger'>Upload fails.</div>";
+				echo "<div class='contain er alert alert-danger'>Upload fails.</div>";
 			}
 		}
 	}
