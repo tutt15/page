@@ -12,7 +12,11 @@
 
 	//const define root folder
 	define('DOCUMENT_ROOT','C:/xampp/htdocs');
-	define('DOMAIN', 'cmslocalpage.vn/');
+	define('DOMAIN', 'http://cmslocalpage.vn/');
+	define('FTP', 'http://publocalpage.vn/');
+	
+	define('VIEW', 'http://cmslocalpage.vn/view/list.php');
+	define('FTP_DOMAIN', 'cmsftppage.vn/');
 
 	define('STATUS_NEW', 'New');
 	define('STATUS_PUBLIC', 'Public');
@@ -20,5 +24,7 @@
 
 	define('FTP_FILE', 'C:/xampp/htdocs/ftp_page');
 	define('LOCAL_FILE', 'C:/xampp/htdocs/page-master');
+
+	define("NUM_ROW", 4);
 
  ?>

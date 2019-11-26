@@ -7,7 +7,7 @@ class DataOperation extends Database
 {
 	
 	//Display all page
-	public function listAllValue($table, $where = array(), $fields = array() ){
+	public function listAllValue($table, $where = array(), $fields = array(), $search = array() ){
 		if ($table == '') {
 			return false;
 		}
@@ -20,8 +20,9 @@ class DataOperation extends Database
 		if(!empty($where)){
 			$clause = implode(',',$where);
 		}
+		$search = '';
 		$array = array();
-		$sql = 'SELECT  '.$colums.' FROM '.$table.' '.$clause;
+		$sql = 'SELECT  '.$colums.' FROM '.$table.' WHERE  '.$clause;
 		$results = mysqli_query($this->con,$sql);
 		while($row = mysqli_fetch_assoc($results)){
 		 		$array[] = $row;
@@ -42,6 +43,31 @@ class DataOperation extends Database
 		if(!empty($where)){
 			foreach ($where as $key => $value) {
 				$condition .= $key . "='" . $value . "' AND ";
+			}
+		}
+		$condition = substr($condition, 0 , -4);
+		$sql = 'SELECT '.$colums.' FROM '.$table.' WHERE '.$condition ;
+		//var_dump($sql);die();
+		$query = mysqli_query($this->con,$sql);
+		// if (!$query) {
+		// 	printf("Error: %s\n", mysqli_error($this->con));
+		// 	exit();
+		$result = mysqli_fetch_array($query);
+		return $result;
+	}
+
+	public function list($table, $where = array(), $fields = array()){
+		if($table == ''){
+			return false;
+		}
+		$colums = '*';
+		$condition = '';
+		if (!empty($fields)) {
+			$colums = implode(',',$fields);
+		}
+		if(!empty($where)){
+			foreach ($where as $key => $value) {
+				$condition .= $value ;
 			}
 		}
 		$condition = substr($condition, 0 , -4);
@@ -70,6 +96,7 @@ class DataOperation extends Database
 		}
 		$array = array();
 		$sql = 'SELECT '.$clause.'('.$colums.')'.' FROM '.$table;
+		
 		//var_dump($sql);die();
 		$results = mysqli_query($this->con,$sql);
 		$row = mysqli_fetch_row($results);  

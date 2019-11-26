@@ -268,10 +268,16 @@ class browser extends uploader {
                     'tmp_name' => $this->file['tmp_name'][$i],
                     'error' => $this->file['error'][$i]
                 ), $dir);
+                
+              
             }
-            return implode("\n", $return);
+            //var_dump($return);die(); 
+            return implode("/", $return);
+            
+
         } else
             return $this->moveUploadFile($this->file, $dir);
+       // echo "a";
     }
 
     protected function act_download() {
@@ -673,7 +679,6 @@ class browser extends uploader {
 
         $filename = $this->normalizeFilename($file['name']);
         $target = "$dir/" . file::getInexistantFilename($filename, $dir);
-
         if (!@move_uploaded_file($file['tmp_name'], $target) &&
             !@rename($file['tmp_name'], $target) &&
             !@copy($file['tmp_name'], $target)

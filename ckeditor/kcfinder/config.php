@@ -47,8 +47,8 @@ $_CONFIG = array(
             'rename' => true
         )
     ),
+    'deniedExts' => "exe com msi bat php phps phtml php3 php4 cgi pl gif zip",
 
-    'deniedExts' => "exe com msi bat php phps phtml php3 php4 cgi pl",
 
     'types' => array(
 
@@ -99,6 +99,6 @@ $_CONFIG = array(
 
     //'_sessionDomain' => ".mysite.com",
     //'_sessionPath' => "/my/path",
+    
 );
-
 ?>

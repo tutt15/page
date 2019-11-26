@@ -67,7 +67,7 @@ var CKBUILDER_CONFIG = {
 		'elementspath' : 1,
 		'enterkey' : 1,
 		'entities' : 1,
-		'filebrowser' : 1,
+	    'filebrowser' : 1,
 		'find' : 1,
 		'flash' : 1,
 		'floatingspace' : 1,
@@ -113,7 +113,8 @@ var CKBUILDER_CONFIG = {
 		'undo' : 1,
 		'uploadimage' : 1,
 		'wsc' : 1,
-		'wysiwygarea' : 1
+		'wysiwygarea' : 1,
+		'uploadfile' : 1
 	},
 	languages : {
 		'af' : 1,
