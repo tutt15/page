@@ -9,10 +9,6 @@
 			"id"=>$id,
 		);
 		$row = $obj->listByValue("page", $where);
-		//var_dump($row['status']);die();
-		if($row['status'] == "3"){
-			$obj->update("page", $where, ["status"=>"2"]);
-		}
 	}
 ?>
 
@@ -26,7 +22,9 @@
 					<input type="hidden" name="id" value="<?php echo $id; ?>">
 					<tr>
 						<td>Title</td>
-						<td><input type="text" class="form-control" value="<?php echo $row["title"]; ?>" id="title" name="title" placeholder="Enter Title" required></td>
+						<td>
+							<input type="text" class="form-control" value="<?php echo $row["title"]; ?>" id="title" name="title" placeholder="Enter Title" required>
+						</td>
 					</tr>
 					<tr>
 						<td>Content</td>
@@ -39,11 +37,10 @@
 						<td><input type="text" class="form-control" name="path" id = "path" placeholder="Enter Path" value="<?php echo $row["path"]; ?>" disabled ></td>
 					</tr>
 					<tr>
-					
 						<td colspan="2" text-align="center">
 							<!-- <button class="btn btn-outline-warning" type="button" data-toggle="modal" title="Preview page"  data-target="#readPage " name="submitPreview" ><i class="material-icons">&#xe560;</i></button> -->
 							<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="material-icons">&#xe560;</i></button>
-							<input type="submit" class="btn btn-primary" name="edit" value="Update" onclick="return Confirm();">
+							<input type="submit" class="btn btn-primary" name="edit" value="Update">
 						</td>
 					</tr>
 				</table>
@@ -57,13 +54,14 @@
 		$("button").click(function() { 
 			var title = $("#title").val();  
 			var content = CKEDITOR.instances['content'].getData();
-
-			document.getElementById("pre_title").innerHTML = title; 
-			document.getElementById("pre_content").innerHTML = content; 
+			$('#pre_title').text(title);
+			$('#pre_content').html(content);
 		}); 
 
 	}); 
 </script>
 <script type="text/javascript" src="/asset/js/validate_form.js"></script>
-<?php include dirname(__DIR__)."/view/modal_preview_page.php";?>
-<?php include dirname(__DIR__)."/templates/page/footer.php";?>
+<?php 
+	include dirname(__DIR__)."/view/modal_preview_page.php";
+	include dirname(__DIR__)."/templates/page/footer.php";
+?>

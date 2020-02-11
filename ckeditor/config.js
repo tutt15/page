@@ -19,7 +19,6 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'tools', items: [ 'Maximize', 'ShowBlocks' ] },
 		{ name: 'about', items: [ 'About' ] }
 	];
-   console.log(root_path);
    config.filebrowserBrowseUrl = '../ckeditor/kcfinder/browse.php?opener=ckeditor&type=files';
    config.filebrowserImageBrowseUrl = '../ckeditor/kcfinder/browse.php?opener=ckeditor&type=images';
    config.filebrowserFlashBrowseUrl = '../ckeditor/kcfinder/browse.php?opener=ckeditor&type=flash';

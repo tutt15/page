@@ -58,14 +58,14 @@
 				}
 				else
 				{
-					$('#error').append('<p class="text-danger">Wrong username or password</p>');
+					alert("Vui lòng kiểm tra lại thông tin đăng nhập");
 				}
 				}
 			});
 		}
 		else
 		{
-			$('#error').append('<p class="text-danger">Please enter full user information</p>');
+			alert("Vui lòng nhập đầy đủ thông tin của người dùng!");
 		}
 
 		return false;

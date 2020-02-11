@@ -7,7 +7,7 @@ class DataOperation extends Database
 {
 	
 	//Display all page
-	public function listAllValue($table, $where = array(), $fields = array(), $search = array() ){
+	public function listAllValue($table, $where = array(), $fields = array() ){
 		if ($table == '') {
 			return false;
 		}
@@ -20,12 +20,13 @@ class DataOperation extends Database
 		if(!empty($where)){
 			$clause = implode(',',$where);
 		}
-		$search = '';
 		$array = array();
-		$sql = 'SELECT  '.$colums.' FROM '.$table.' WHERE  '.$clause;
+		$sql = 'SELECT  '.$colums.' FROM '.$table . $clause;
+		// var_dump(($sql));
 		$results = mysqli_query($this->con,$sql);
+		
 		while($row = mysqli_fetch_assoc($results)){
-		 		$array[] = $row;
+		 	$array[] = $row;
 	 	}
 		return $array;
 
@@ -47,11 +48,9 @@ class DataOperation extends Database
 		}
 		$condition = substr($condition, 0 , -4);
 		$sql = 'SELECT '.$colums.' FROM '.$table.' WHERE '.$condition ;
-		//var_dump($sql);die();
+		// var_dump($sql);die;
 		$query = mysqli_query($this->con,$sql);
-		// if (!$query) {
-		// 	printf("Error: %s\n", mysqli_error($this->con));
-		// 	exit();
+		
 		$result = mysqli_fetch_array($query);
 		return $result;
 	}
@@ -104,6 +103,28 @@ class DataOperation extends Database
  
 	}
 
+	public function countPage($table, $where = array(), $fields = array() ){
+		if ($table == '') {
+			return false;
+		}
+		$colums = '';
+		if (!empty($fields)) {
+			$colums = implode(',',$fields);
+		}
+		//clause query after from table 
+		$clause = '';
+		if(!empty($where)){
+			$clause = implode(',',$where);
+		}
+		$array = array();
+		$sql = 'SELECT '.$clause.'(id)'.' FROM '.$table ;
+		// var_dump(($sql));
+		$results = mysqli_query($this->con,$sql);
+		$row = mysqli_fetch_row($results);  
+		return $row;
+ 
+	}
+
 	//Create new page
 	public function insert($table, $fields = array()){
 		if($table == ''){
@@ -112,6 +133,7 @@ class DataOperation extends Database
 		$sql = 'INSERT INTO '.$table;
 		$sql .= '('.implode(',',array_keys($fields)).') VALUES';
 		$sql .= "('".implode("','", array_values($fields))."')";
+
 		$result = mysqli_query($this->con,$sql);
 		if($result){
 			return true;
@@ -165,4 +187,8 @@ class DataOperation extends Database
 	}
 
 }
+
+
+
+
 ?>

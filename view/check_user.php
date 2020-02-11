@@ -2,6 +2,7 @@
     include dirname(__DIR__)."/model/action.php";
     session_start();
     $conn = mysqli_connect(HOST,USERNAME,PASSWORD,DATABASE);
+    mysqli_set_charset($conn , "utf8");
     $sql_login = new DataOperation();
     if (isset($_POST["check_user"])) {
 		$username = mysqli_real_escape_string($conn, $_POST["username"]);

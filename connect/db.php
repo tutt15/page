@@ -8,6 +8,7 @@ class Database
 		if (!$this->con) {
 			echo "Error in Connecting ".mysqli_connect_error();
 		}
+		mysqli_set_charset($this->con, "utf8");
 	}
 }
 

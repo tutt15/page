@@ -37,8 +37,8 @@
 					</tr>
 					<tr>
 						<td colspan="2" text-align="center">
-							<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="material-icons">&#xe560;</i></button>
-							<input type="submit" name="create" id = "create" class="btn btn-primary"   value="Add">
+							<button type="button" class="btn btn-secondary" data-toggle="modal" data-target=".bd-example-modal-lg" ><i class="material-icons">&#xe560;</i></button>
+							<input type="submit" name="create" id = "create" class="btn btn-primary" value="Add">
 						</td>
 					</tr>
 				</table>
@@ -53,9 +53,8 @@
 		$("button").click(function() { 
 			var title = $("#title").val();  
 			var content = CKEDITOR.instances['content'].getData();
-
-			document.getElementById("pre_title").innerHTML = title; 
-			document.getElementById("pre_content").innerHTML = content; 
+			$('#pre_title').text(title);
+			$('#pre_content').html(content); 
 		}); 
 
 	}); 

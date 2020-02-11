@@ -31,10 +31,10 @@
 			}
 		});
 		if(flag==0){
-			alert("Please check checkbox");
+			alert("Vui lòng chọn bài viết!");
 			return false;
 		}
-		if(confirm('Are you sure?')) {
+		if(confirm('Bạn đã chắc chắn chưa?')) {
 			$('#sbform').submit();
 			return true;
 		}

@@ -1,25 +1,28 @@
-<?php
-include_once dirname(__DIR__).'/config/config.php';
-include_once dirname(__DIR__).'/connect/db.php';
-$conn = mysqli_connect(HOST,USERNAME,PASSWORD,DATABASE);
-$pageid = $_POST['page_id'];
-$sql = "select title, content from page where id=".$pageid;
-$result = mysqli_query($conn,$sql);
-$response = "<table border='0' width='100%'>";
-while( $row = mysqli_fetch_array($result) ){
+<?php 
+ include dirname(__DIR__). "/controller/page.php";
+	$pageid = $_POST['page_id'];
+    
+    $where = array(
+        "id" => $pageid,
+    );
+    $row = $obj->listByValue("page", $where);
+
     $title = $row['title'];
     $content = $row['content'];
+    $templ_id =  $row['template_id'];
+
+    $sql = $obj->listByValue( "template", ["id" =>$templ_id],["template_src"] );
+
+    $templ = $sql[0];
     
-    $response .= "<tr>";
-    $response .= "<td></td><td class='text-center mb-5' style='color:red;font-size:25px'>".$title."</td>";
-    $response .= "</tr>";
+    $file = file_get_contents(dirname(__DIR__) .'/cat_template/'. $templ);
+    $patterns = array();
+    $replacements = array();
+    $patterns[1] = '~<h4[^>]*>[^<]*</h4>~';
+    $replacements[1] = "<h4 style='color:red'>$title</h4>";
+   	$patterns[2] = '~<textarea[^>]*>[^<]*</textarea>~';
+    $replacements[2] = "<p id='pre-editor1'>$content</p>";
+    
+    $templ_page = preg_replace($patterns, $replacements, $file);
 
-    $response .= "<tr>";
-    $response .= "<td></td><td>".$content."</td>";
-    $response .= "</tr>";
-
-}
-$response .= "</table>";
-
-echo $response;
-exit;
+    echo $templ_page;

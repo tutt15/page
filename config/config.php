@@ -24,6 +24,8 @@
 
 	define('FTP_FILE', 'C:/xampp/htdocs/ftp_page');
 	define('LOCAL_FILE', 'C:/xampp/htdocs/page-master');
+	define('DIR_TEMPL', 'C:/xampp/htdocs/page-master/cat_template');
+	define('FOLDER_PATH', 'C:/xampp/htdocs/page-master/path');
 
 	define("NUM_ROW", 4);
 

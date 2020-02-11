@@ -2,7 +2,7 @@
     
     include dirname(__DIR__)."/config/config.php";
     include dirname(__DIR__)."/common.php";
-    $path = $_POST['path'];
+    $path = trim($_POST['path']);
     $folder = LOCAL_FILE . '/' . $path;
     if(file_exists($folder)){
         echo "Fails";
